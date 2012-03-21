@@ -1,18 +1,18 @@
 $LOAD_PATH << './'
 require 'csv'
-require 'merchant_object'
+require 'customer_object'
 
 
-class Merchant
+class Customer
 
 CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
 
-  # declaring and creating 'loaded_data' for the Merchant class 
+  # declaring and creating 'loaded_data' for the customer class 
 
   def initialize(filename, options = CSV_OPTIONS)
     @@loaded_data = []
     if filename.nil?
-      filename = "data/merchants.csv"
+      filename = "data/customers.csv"
     end
     file = (CSV.open(filename, options))
     loading_data(file)
@@ -26,22 +26,21 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
     @@loaded=input
   end
 
-  # loading the merchants.csv file TO the 'loaded_data' variable
-  # within the Merchant class
+  # loading the customers.csv file TO the 'loaded_data' variable
+  # within the customer class
 
   def loading_data(file)
     file.rewind
-    @@loaded_data = file.collect { |line| Merchant_Object.new(line) }
-    # puts @@loaded_data
+    @@loaded_data = file.collect { |line| Customer_Object.new(line) }
   end 
 
-  def merchant_name
+  def customer_name
     @@loaded_data.each do |record| 
-      puts record.merchant_name
+      puts record.customer_fname + " " + record.customer_lname
     end
   end
 
 end
 
-merchants = Merchant.new("data/merchants.csv")
-merchants.merchant_name
+customers = Customer.new("data/customers.csv")
+customers.customer_name

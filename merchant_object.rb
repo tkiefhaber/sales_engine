@@ -1,6 +1,6 @@
-class Merchant_objects
+class Merchant_Object
 
-  attr_accessor :merchant_id, :merchant_name, :merchant_creation, :merchant_update
+  attr_accessor :merchant_id, :merchant_name, :merchant_created, :merchant_updated
 
   def initialize(attributes = {})
     self.merchant_id        = attributes[:id]
