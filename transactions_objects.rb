@@ -1,5 +1,5 @@
 
-class Transactions_objects
+class TransactionsObjects
 
   attr_accessor :t_transactions_id, :t_invoice_id, :t_credit_card_number,
                 :t_credit_card_expiration, :t_result, 

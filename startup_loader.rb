@@ -1,18 +1,23 @@
 $LOAD_PATH << './'
 require 'csv'
 require 'invoice_items_objects'
+require 'invoices_objects'
+require 'transactions_objects'
+require 'item_object'
+require 'merchant_object'
+require 'customer_object'
 
-
-class Invoice_items
+class StartupLoader
 
 CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
 
-  # declaring and creating 'loaded_data' for the Invoices class 
+  # declaring and creating 'loaded_data' for the startuploader class
 
-  def initialize(filename, options = CSV_OPTIONS)
+  def initialize(filename, class_object)
+    @target_class = class_object
     @loaded_data = []
     filename_check(filename)
-    file = (CSV.open(filename, options))
+    file = (CSV.open(filename, CSV_OPTIONS))
     loading_data(file)
   end
 
@@ -23,11 +28,11 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
     return filename
   end
 
-  def self.loaded_data
+  def loaded_data
     @loaded_data
   end
 
-  def self.loaded_data=(input)
+  def loaded_data=(input)
     @loaded=input
   end
 
@@ -36,17 +41,9 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
 
   def loading_data(file)
     file.rewind
-    @loaded_data = file.collect { |line| Invoice_items_objects.new(line) }
-    # puts @loaded_data
+    @loaded_data = file.collect { |line| @target_class.new(line) }
+    return @loaded_data
   end 
-
-  def ii_invoice_items_id
-    @loaded_data.each do |record| 
-      puts record.ii_invoice_items_id
-    end
-  end
-
 end
 
-invoice_items = Invoice_items.new("data/invoice_items.csv")
-invoice_items.ii_invoice_items_id
+# invoice_items = StartupLoader.new("data/customers.csv", CustomerObject)

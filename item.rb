@@ -9,7 +9,7 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
   # declaring and creating 'loaded_data' for the item class 
 
   def initialize(filename, options = CSV_OPTIONS)
-    @@loaded_data = []
+    @loaded_data = []
     if filename.nil?
       filename = "data/items.csv"
     end
@@ -18,11 +18,11 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
   end
 
   def self.loaded_data
-    @@loaded_data
+    @loaded_data
   end
 
   def self.loaded_data=(input)
-    @@loaded=input
+    @loaded=input
   end
 
   # loading the items.csv file TO the 'loaded_data' variable
@@ -30,16 +30,16 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
 
   def loading_data(file)
     file.rewind
-    @@loaded_data = file.collect { |line| Item_Object.new(line) }
+    @loaded_data = file.collect { |line| Item_Object.new(line) }
   end 
 
-  def item_name
-    @@loaded_data.each do |record| 
-      puts record.item_name
+  def it_item_name
+    @loaded_data.each do |record| 
+      puts record.it_item_name
     end
   end
 
 end
 
 items = Item.new("data/items.csv")
-items.item_name
+items.it_item_name

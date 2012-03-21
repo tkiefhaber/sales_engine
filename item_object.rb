@@ -1,14 +1,14 @@
-class Item_Object
+class ItemObject
 
-  attr_accessor :item_id, :item_name, :item_description, :item_unit_price, :merchant_id, :item_created, :item_updated
+  attr_accessor :it_item_id, :it_item_name, :it_item_description, :it_item_unit_price, :it_merchant_id, :it_item_created, :it_item_updated
 
   def initialize(attributes = {})
-    self.item_id             = attributes[:id]
-    self.item_name           = attributes[:name]
-    self.item_description    = attributes[:description]
-    self.item_unit_price     = attributes[:unit_price]
-    self.merchant_id         = attributes[:merchant_id]
-    self.item_created        = attributes[:created_at]
-    self.item_updated        = attributes[:updated_at]
+    self.it_item_id             = attributes[:id]
+    self.it_item_name           = attributes[:name]
+    self.it_item_description    = attributes[:description]
+    self.it_item_unit_price     = attributes[:unit_price]
+    self.it_merchant_id         = attributes[:merchant_id]
+    self.it_item_created        = attributes[:created_at]
+    self.it_item_updated        = attributes[:updated_at]
   end
 end

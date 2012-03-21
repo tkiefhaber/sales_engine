@@ -10,7 +10,7 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
   # declaring and creating 'loaded_data' for the Merchant class 
 
   def initialize(filename, options = CSV_OPTIONS)
-    @@loaded_data = []
+    @loaded_data = []
     if filename.nil?
       filename = "data/merchants.csv"
     end
@@ -19,11 +19,11 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
   end
 
   def self.loaded_data
-    @@loaded_data
+    @loaded_data
   end
 
   def self.loaded_data=(input)
-    @@loaded=input
+    @loaded=input
   end
 
   # loading the merchants.csv file TO the 'loaded_data' variable
@@ -31,17 +31,17 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
 
   def loading_data(file)
     file.rewind
-    @@loaded_data = file.collect { |line| Merchant_Object.new(line) }
-    # puts @@loaded_data
+    @loaded_data = file.collect { |line| Merchant_Object.new(line) }
+    # puts @loaded_data
   end 
 
-  def merchant_name
-    @@loaded_data.each do |record| 
-      puts record.merchant_name
+  def m_merchant_name
+    @loaded_data.each do |record| 
+      puts record.m_merchant_name
     end
   end
 
 end
 
 merchants = Merchant.new("data/merchants.csv")
-merchants.merchant_name
+merchants.m_merchant_name
