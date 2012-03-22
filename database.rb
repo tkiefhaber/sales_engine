@@ -5,7 +5,8 @@ require 'singleton'
 class Database
   include Singleton
 
-  attr_accessor :invoice_items_data, :invoices_data, :transactions_data, :items_data, :merchants_data, :customers_data
+  attr_accessor :invoice_items_data, :invoices_data, :transactions_data,
+                :items_data, :merchants_data, :customers_data
 
   def initialize
     @invoice_items_data   = StartupLoader.new("data/invoice_items.csv", InvoiceItemsObjects).loaded_data
