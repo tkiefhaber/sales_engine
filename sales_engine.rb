@@ -1,7 +1,7 @@
 $LOAD_PATH << './'
-require 'database'
+require 'lib/sales_engine/database'
 
 class SalesEngine
   db = Database.instance
-  #db.query
+  db.query
 end
