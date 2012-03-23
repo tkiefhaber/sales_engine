@@ -1,13 +1,11 @@
-$LOAD_PATH << './'
-require 'database'
-require 'item_object'
+module SalesEngine
+  class Item
 
-class Item
-
-  def it_item_name
-    Database.each do |record| 
-      puts record.it_item_name
+    def it_item_name
+      Database.each do |record| 
+        puts record.it_item_name
+      end
     end
-  end
 
+  end
 end

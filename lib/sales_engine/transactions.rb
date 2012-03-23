@@ -1,16 +1,14 @@
-$LOAD_PATH << './'
-require 'database'
-require 'transactions_objects'
+module SalesEngine
+
+  class Transactions
 
 
-class Transactions
-
-
-  def t_transactions_id
-    Database.each do |record| 
-      puts record.t_transactions_id
+    def t_transactions_id
+      Database.each do |record| 
+        puts record.t_transactions_id
+      end
     end
+
   end
 
 end
-

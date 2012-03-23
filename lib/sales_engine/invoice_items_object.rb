@@ -1,4 +1,3 @@
-
 class InvoiceItemsObject
 
   attr_accessor :ii_invoice_items_id, :ii_item_id, :ii_invoice_id,

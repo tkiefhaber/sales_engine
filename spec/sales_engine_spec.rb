@@ -1,6 +1,9 @@
 require 'spec_helper'
-require 'sales_engine'
 
 describe SalesEngine do
-
+  describe ".startup" do
+    it "starts this whole schebang up" do
+      #Test things
+    end
+  end
 end
