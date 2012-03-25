@@ -3,8 +3,8 @@ require 'spec_helper'
 describe SalesEngine::Customer do
   describe ".random" do
     context "when random method called" do
-      it "returns a CustomerObject" do
-        SalesEngine::Customer.random.class.should == CustomerObject.new.class
+      it "returns a SalesEngine::Customer" do
+        SalesEngine::Customer.random.class.should == SalesEngine::Customer.new.class
       end
     end
   end
@@ -19,19 +19,19 @@ describe SalesEngine::Customer do
     end
 
     it "returns only a single instance" do
-      SalesEngine::Customer.find_by_created_at("2012-02-26 20:56:56 UTC").instance_of?(CustomerObject).should == true
-      SalesEngine::Customer.find_by_updated_at("2012-02-26 20:56:56 UTC").instance_of?(CustomerObject).should == true
-      SalesEngine::Customer.find_by_first_name("Stone").instance_of?(CustomerObject).should == true
-      SalesEngine::Customer.find_by_last_name("Dickens").instance_of?(CustomerObject).should == true
-      SalesEngine::Customer.find_by_id("26").instance_of?(CustomerObject).should == true
+      SalesEngine::Customer.find_by_created_at("2012-02-26 20:56:56 UTC").instance_of?(SalesEngine::Customer).should == true
+      SalesEngine::Customer.find_by_updated_at("2012-02-26 20:56:56 UTC").instance_of?(SalesEngine::Customer).should == true
+      SalesEngine::Customer.find_by_first_name("Stone").instance_of?(SalesEngine::Customer).should == true
+      SalesEngine::Customer.find_by_last_name("Dickens").instance_of?(SalesEngine::Customer).should == true
+      SalesEngine::Customer.find_by_id("26").instance_of?(SalesEngine::Customer).should == true
     end
 
-    it "returns an instance of the Customer object" do
-      SalesEngine::Customer.find_by_created_at("2012-02-26 20:56:56 UTC").class.should == CustomerObject.new.class
-      SalesEngine::Customer.find_by_updated_at("2012-02-26 20:56:56 UTC").class.should == CustomerObject.new.class
-      SalesEngine::Customer.find_by_first_name("Stone").class.should == CustomerObject.new.class
-      SalesEngine::Customer.find_by_last_name("Dickens").class.should == CustomerObject.new.class
-      SalesEngine::Customer.find_by_id("26").class.should == CustomerObject.new.class
+    it "returns an instance of the SalesEngine::Customer object" do
+      SalesEngine::Customer.find_by_created_at("2012-02-26 20:56:56 UTC").class.should == SalesEngine::Customer.new.class
+      SalesEngine::Customer.find_by_updated_at("2012-02-26 20:56:56 UTC").class.should == SalesEngine::Customer.new.class
+      SalesEngine::Customer.find_by_first_name("Stone").class.should == SalesEngine::Customer.new.class
+      SalesEngine::Customer.find_by_last_name("Dickens").class.should == SalesEngine::Customer.new.class
+      SalesEngine::Customer.find_by_id("26").class.should == SalesEngine::Customer.new.class
     end
 
     it "returns an instance containing a matching attribute" do
@@ -112,15 +112,15 @@ describe SalesEngine::Customer do
         SalesEngine::Customer.find_all_by_id("26").class.should == Array
       end
 
-      it "returns instances of the Customer object" do
-        SalesEngine::Customer.find_all_by_created_at("2012-02-26 20:56:56 UTC").sample.class.should == CustomerObject.new.class
-        SalesEngine::Customer.find_all_by_updated_at("2012-02-26 20:56:56 UTC").sample.class.should == CustomerObject.new.class
-        SalesEngine::Customer.find_all_by_first_name("Stone").sample.class.should == CustomerObject.new.class
-        SalesEngine::Customer.find_all_by_last_name("Dickens").sample.class.should == CustomerObject.new.class
-        SalesEngine::Customer.find_all_by_id("26").sample.class.should == CustomerObject.new.class
+      it "returns instances of the SalesEngine::Customer object" do
+        SalesEngine::Customer.find_all_by_created_at("2012-02-26 20:56:56 UTC").sample.class.should == SalesEngine::Customer.new.class
+        SalesEngine::Customer.find_all_by_updated_at("2012-02-26 20:56:56 UTC").sample.class.should == SalesEngine::Customer.new.class
+        SalesEngine::Customer.find_all_by_first_name("Stone").sample.class.should == SalesEngine::Customer.new.class
+        SalesEngine::Customer.find_all_by_last_name("Dickens").sample.class.should == SalesEngine::Customer.new.class
+        SalesEngine::Customer.find_all_by_id("26").sample.class.should == SalesEngine::Customer.new.class
       end
 
-      it "returns Customer objects containing matching attributes" do
+      it "returns SalesEngine::Customer objects containing matching attributes" do
         SalesEngine::Customer.find_all_by_created_at("2012-02-26 20:56:56 UTC").sample.respond_to?(:created_at).should == true
         SalesEngine::Customer.find_all_by_updated_at("2012-02-26 20:56:56 UTC").sample.respond_to?(:updated_at).should == true
         SalesEngine::Customer.find_all_by_first_name("Stone").sample.respond_to?(:first_name).should == true

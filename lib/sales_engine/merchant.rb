@@ -4,6 +4,17 @@ module SalesEngine
 
     attr_accessor :results, :input, :id, :name, :created_at, :updated_at
 
+    def initialize(attributes = {})
+      self.id           = attributes[:id].to_s
+      self.name         = attributes[:name]
+      self.created_at   = attributes[:created_at]
+      self.updated_at   = attributes[:updated_at]
+    end
+
+    def items
+      # returns all invoice objects associated with this merchant
+    end
+
     def self.random
       return SalesEngine::Database.instance.merchants_data.sample
     end

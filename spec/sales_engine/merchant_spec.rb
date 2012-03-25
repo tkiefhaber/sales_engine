@@ -3,8 +3,8 @@ require 'spec_helper'
 describe SalesEngine::Merchant do
   describe ".random" do
     context "when random method called" do
-      it "returns a MerchantObject" do
-        SalesEngine::Merchant.random.class.should == MerchantObject.new.class
+      it "returns a SalesEngine::Merchant" do
+        SalesEngine::Merchant.random.class.should == SalesEngine::Merchant.new.class
       end
     end
   end
@@ -19,17 +19,17 @@ describe SalesEngine::Merchant do
     end
 
     it "returns only a single instance" do
-      SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").instance_of?(MerchantObject).should == true
-      SalesEngine::Merchant.find_by_updated_at("2012-02-26 20:56:50 UTC").instance_of?(MerchantObject).should == true
-      SalesEngine::Merchant.find_by_name("Johns Inc").instance_of?(MerchantObject).should == true
-      SalesEngine::Merchant.find_by_id("2").instance_of?(MerchantObject).should == true
+      SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").instance_of?(SalesEngine::Merchant).should == true
+      SalesEngine::Merchant.find_by_updated_at("2012-02-26 20:56:50 UTC").instance_of?(SalesEngine::Merchant).should == true
+      SalesEngine::Merchant.find_by_name("Johns Inc").instance_of?(SalesEngine::Merchant).should == true
+      SalesEngine::Merchant.find_by_id("2").instance_of?(SalesEngine::Merchant).should == true
     end
 
-    it "returns an instance of the Merchant object" do
-      SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").class.should == MerchantObject.new.class
-      SalesEngine::Merchant.find_by_updated_at("2012-02-26 20:56:50 UTC").class.should == MerchantObject.new.class
-      SalesEngine::Merchant.find_by_name("Johns Inc").class.should == MerchantObject.new.class
-      SalesEngine::Merchant.find_by_id("2").class.should == MerchantObject.new.class
+    it "returns an instance of the SalesEngine::Merchant object" do
+      SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").class.should == SalesEngine::Merchant.new.class
+      SalesEngine::Merchant.find_by_updated_at("2012-02-26 20:56:50 UTC").class.should == SalesEngine::Merchant.new.class
+      SalesEngine::Merchant.find_by_name("Johns Inc").class.should == SalesEngine::Merchant.new.class
+      SalesEngine::Merchant.find_by_id("2").class.should == SalesEngine::Merchant.new.class
     end
 
     it "returns an instance containing a matching attribute" do
@@ -88,14 +88,14 @@ describe SalesEngine::Merchant do
         SalesEngine::Merchant.find_all_by_id("2").class.should == Array
       end
 
-      it "returns instances of the Merchant object" do
-        SalesEngine::Merchant.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.class.should == MerchantObject.new.class
-        SalesEngine::Merchant.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.class.should == MerchantObject.new.class
-        SalesEngine::Merchant.find_all_by_name("Johns Inc").sample.class.should == MerchantObject.new.class
-        SalesEngine::Merchant.find_all_by_id("2").sample.class.should == MerchantObject.new.class
+      it "returns instances of the SalesEngine::Merchant object" do
+        SalesEngine::Merchant.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.class.should == SalesEngine::Merchant.new.class
+        SalesEngine::Merchant.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.class.should == SalesEngine::Merchant.new.class
+        SalesEngine::Merchant.find_all_by_name("Johns Inc").sample.class.should == SalesEngine::Merchant.new.class
+        SalesEngine::Merchant.find_all_by_id("2").sample.class.should == SalesEngine::Merchant.new.class
       end
 
-      it "returns Merchant objects containing matching attributes" do
+      it "returns SalesEngine::Merchant objects containing matching attributes" do
         SalesEngine::Merchant.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.respond_to?(:created_at).should == true
         SalesEngine::Merchant.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.respond_to?(:updated_at).should == true
         SalesEngine::Merchant.find_all_by_name("Johns Inc").sample.respond_to?(:name).should == true
@@ -116,4 +116,24 @@ describe SalesEngine::Merchant do
 
     end
   end 
+
+  describe "#items" do
+    it "does not return nil" do
+      SalesEngine::Merchant.items
+    end
+
+    it "does not return the empty array" do
+      SalesEngine::Merchant.items
+    end
+
+    it "returns a collection of SalesEngine::Item instances" do
+
+    end
+
+    it "returns item instances whose Merchant Ids correspond to the Merchant searched" do
+    end
+    
+    it "returns a collection of Item instances associated with that SalesEngine::merchant for the products they sell" do
+    end
+
 end

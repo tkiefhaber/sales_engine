@@ -1,11 +1,4 @@
-
 require 'csv'
-# require '/sales_engine/invoice_items_object'
-# require 'invoices_object'
-# require 'transactions_object'
-# require 'item_object'
-# require 'merchant_object'
-# require 'customer_object'
 
 module SalesEngine
 
@@ -22,10 +15,6 @@ module SalesEngine
     end
 
     def csv_open(filename)
-      # if filename.nil?
-      #   puts "Filename is nil; please specify a valid filename, processing otherwise unable to continue"
-      #   return @loaded_data
-      # end
       loading_data(CSV.open(filename, CSV_OPTIONS))
     end
 

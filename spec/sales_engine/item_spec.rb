@@ -3,8 +3,8 @@ require 'spec_helper'
 describe SalesEngine::Item do
   describe ".random" do
     context "when random method called" do
-      it "returns a ItemObject" do
-        SalesEngine::Item.random.class.should == ItemObject.new.class
+      it "returns a SalesEngine::Item" do
+        SalesEngine::Item.random.class.should == SalesEngine::Item.new.class
       end
     end
   end
@@ -19,23 +19,23 @@ describe SalesEngine::Item do
     end
 
     it "returns only a single instance" do
-      SalesEngine::Item.find_by_created_at("2012-02-26 20:56:50 UTC").instance_of?(ItemObject).should == true
-      SalesEngine::Item.find_by_updated_at("2012-02-26 20:56:50 UTC").instance_of?(ItemObject).should == true
-      SalesEngine::Item.find_by_name("Item Ea Quis").instance_of?(ItemObject).should == true
-      SalesEngine::Item.find_by_description("Accusamus commodi molestias sint et sit. Iste et sit. Ut in aut.").instance_of?(ItemObject).should == true
-      SalesEngine::Item.find_by_id("26").instance_of?(ItemObject).should == true
-      SalesEngine::Item.find_by_merchant_id("26").instance_of?(ItemObject).should == true
-      SalesEngine::Item.find_by_unit_price("7661").instance_of?(ItemObject).should == true
+      SalesEngine::Item.find_by_created_at("2012-02-26 20:56:50 UTC").instance_of?(SalesEngine::Item).should == true
+      SalesEngine::Item.find_by_updated_at("2012-02-26 20:56:50 UTC").instance_of?(SalesEngine::Item).should == true
+      SalesEngine::Item.find_by_name("Item Ea Quis").instance_of?(SalesEngine::Item).should == true
+      SalesEngine::Item.find_by_description("Accusamus commodi molestias sint et sit. Iste et sit. Ut in aut.").instance_of?(SalesEngine::Item).should == true
+      SalesEngine::Item.find_by_id("26").instance_of?(SalesEngine::Item).should == true
+      SalesEngine::Item.find_by_merchant_id("26").instance_of?(SalesEngine::Item).should == true
+      SalesEngine::Item.find_by_unit_price("7661").instance_of?(SalesEngine::Item).should == true
     end
 
-    it "returns an instance of the Item object" do
-      SalesEngine::Item.find_by_created_at("2012-02-26 20:56:50 UTC").class.should == ItemObject.new.class
-      SalesEngine::Item.find_by_updated_at("2012-02-26 20:56:50 UTC").class.should == ItemObject.new.class
-      SalesEngine::Item.find_by_name("Item Ea Quis").class.should == ItemObject.new.class
-      SalesEngine::Item.find_by_description("Accusamus commodi molestias sint et sit. Iste et sit. Ut in aut.").class.should == ItemObject.new.class
-      SalesEngine::Item.find_by_id("26").class.should == ItemObject.new.class
-      SalesEngine::Item.find_by_merchant_id("26").class.should == ItemObject.new.class
-      SalesEngine::Item.find_by_unit_price("7661").class.should == ItemObject.new.class
+    it "returns an instance of the SalesEngine::Item object" do
+      SalesEngine::Item.find_by_created_at("2012-02-26 20:56:50 UTC").class.should == SalesEngine::Item.new.class
+      SalesEngine::Item.find_by_updated_at("2012-02-26 20:56:50 UTC").class.should == SalesEngine::Item.new.class
+      SalesEngine::Item.find_by_name("Item Ea Quis").class.should == SalesEngine::Item.new.class
+      SalesEngine::Item.find_by_description("Accusamus commodi molestias sint et sit. Iste et sit. Ut in aut.").class.should == SalesEngine::Item.new.class
+      SalesEngine::Item.find_by_id("26").class.should == SalesEngine::Item.new.class
+      SalesEngine::Item.find_by_merchant_id("26").class.should == SalesEngine::Item.new.class
+      SalesEngine::Item.find_by_unit_price("7661").class.should == SalesEngine::Item.new.class
     end
 
     it "returns an instance containing a matching attribute" do
@@ -51,7 +51,7 @@ describe SalesEngine::Item do
     describe "when find_by_name method is called" do
 
       context "when case-variant parameters are passed" do 
-        ["Item Ea Quis", "ITEM EA QUIS", "item ea quis"].each do |param|
+        ["Item Ea Quis", "Item EA QUIS", "item ea quis"].each do |param|
           it "returns the results from a case-insensitive search" do
             SalesEngine::Item.find_by_name(param).should == SalesEngine::Item.find_by_name("Item Ea Quis")
           end
@@ -143,17 +143,17 @@ describe SalesEngine::Item do
         SalesEngine::Item.find_all_by_unit_price("7661").class.should == Array
       end
 
-      it "returns instances of the Item object" do
-        SalesEngine::Item.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.class.should == ItemObject.new.class
-        SalesEngine::Item.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.class.should == ItemObject.new.class
-        SalesEngine::Item.find_all_by_name("Item Ea Quis").sample.class.should == ItemObject.new.class
-        SalesEngine::Item.find_all_by_description("Accusamus commodi molestias sint et sit. Iste et sit. Ut in aut.").sample.class.should == ItemObject.new.class
-        SalesEngine::Item.find_all_by_id("26").sample.class.should == ItemObject.new.class
-        SalesEngine::Item.find_all_by_merchant_id("26").sample.class.should == ItemObject.new.class
-        SalesEngine::Item.find_all_by_unit_price("7661").sample.class.should == ItemObject.new.class
+      it "returns instances of the SalesEngine::Item object" do
+        SalesEngine::Item.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.class.should == SalesEngine::Item.new.class
+        SalesEngine::Item.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.class.should == SalesEngine::Item.new.class
+        SalesEngine::Item.find_all_by_name("Item Ea Quis").sample.class.should == SalesEngine::Item.new.class
+        SalesEngine::Item.find_all_by_description("Accusamus commodi molestias sint et sit. Iste et sit. Ut in aut.").sample.class.should == SalesEngine::Item.new.class
+        SalesEngine::Item.find_all_by_id("26").sample.class.should == SalesEngine::Item.new.class
+        SalesEngine::Item.find_all_by_merchant_id("26").sample.class.should == SalesEngine::Item.new.class
+        SalesEngine::Item.find_all_by_unit_price("7661").sample.class.should == SalesEngine::Item.new.class
       end
 
-      it "returns Item objects containing matching attributes" do
+      it "returns SalesEngine::Item objects containing matching attributes" do
         SalesEngine::Item.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.respond_to?(:created_at).should == true
         SalesEngine::Item.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.respond_to?(:updated_at).should == true
         SalesEngine::Item.find_all_by_name("Item Ea Quis").sample.respond_to?(:name).should == true
@@ -170,7 +170,7 @@ describe SalesEngine::Item do
       it "returns the empty array" do
         SalesEngine::Item.find_all_by_created_at("2012-02-26 20:56:50").should == []
         SalesEngine::Item.find_all_by_updated_at("2012-02-26 UTC").should == []
-        SalesEngine::Item.find_all_by_name("FUnn ITEMZ").should == []
+        SalesEngine::Item.find_all_by_name("FUnn SalesEngine::ItemZ").should == []
         SalesEngine::Item.find_all_by_description("happy lil' description").should == []
         SalesEngine::Item.find_all_by_id("123465789642").should == []
         SalesEngine::Item.find_all_by_merchant_id("123809531").should == []

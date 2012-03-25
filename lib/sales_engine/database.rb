@@ -1,5 +1,3 @@
-# $LOAD_PATH << './'
-# require 'startup_loader'
 require 'singleton'
 
 module SalesEngine
@@ -10,12 +8,12 @@ module SalesEngine
     attr_accessor :invoice_items_data, :invoices_data, :transactions_data, :items_data, :merchants_data, :customers_data
 
     def initialize
-      @invoice_items_data   = SalesEngine::StartupLoader.new("data/invoice_items.csv", InvoiceItemsObject).loaded_data
-      @invoices_data        = SalesEngine::StartupLoader.new("data/invoices.csv", InvoicesObject).loaded_data
-      @transactions_data    = SalesEngine::StartupLoader.new("data/transactions.csv", TransactionsObject).loaded_data
-      @items_data           = SalesEngine::StartupLoader.new("data/items.csv", ItemObject).loaded_data
-      @merchants_data       = SalesEngine::StartupLoader.new("data/merchants.csv", MerchantObject).loaded_data
-      @customers_data       = SalesEngine::StartupLoader.new("data/customers.csv", CustomerObject).loaded_data
+      @invoice_items_data   = SalesEngine::StartupLoader.new("data/invoice_items.csv", InvoiceItem).loaded_data
+      @invoices_data        = SalesEngine::StartupLoader.new("data/invoices.csv", Invoice).loaded_data
+      @transactions_data    = SalesEngine::StartupLoader.new("data/transactions.csv", Transaction).loaded_data
+      @items_data           = SalesEngine::StartupLoader.new("data/items.csv", Item).loaded_data
+      @merchants_data       = SalesEngine::StartupLoader.new("data/merchants.csv", Merchant).loaded_data
+      @customers_data       = SalesEngine::StartupLoader.new("data/customers.csv", Customer).loaded_data
     end
 
     # def merchants_data
