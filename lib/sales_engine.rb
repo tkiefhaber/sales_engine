@@ -18,8 +18,9 @@ module SalesEngine
   def self.startup
     db = SalesEngine::Database.instance
     # db.query
-    # rm = SalesEngine::Merchant.find_by_merchant_name(#{parameter})
-    # puts rm.m_merchant_name
+    # puts SalesEngine::Merchant.new.id
+    # puts SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC")
+    puts SalesEngine::Customer.find_all_by_first_name("Stone")
   end
 
   # startup :db

@@ -18,9 +18,9 @@ module SalesEngine
       @customers_data       = SalesEngine::StartupLoader.new("data/customers.csv", CustomerObject).loaded_data
     end
 
-    def merchants_data
-      @merchants_data
-    end
+    # def merchants_data
+    #   @merchants_data
+    # end
 
     # def query
     #   @merchants_data.each do |record| 

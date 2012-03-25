@@ -1,11 +1,15 @@
 class MerchantObject
 
-  attr_accessor :m_merchant_id, :m_merchant_name, :m_merchant_created, :m_merchant_updated
+  attr_accessor :id, :name, :created_at, :updated_at
 
   def initialize(attributes = {})
-    self.m_merchant_id        = attributes[:id]
-    self.m_merchant_name      = attributes[:name]
-    self.m_merchant_created   = attributes[:created_at]
-    self.m_merchant_updated   = attributes[:updated_at]
+    self.id           = attributes[:id].to_s
+    self.name         = attributes[:name]
+    self.created_at   = attributes[:created_at]
+    self.updated_at   = attributes[:updated_at]
+  end
+
+  def invoices
+    # returns all invoice objects associated with this merchant
   end
 end

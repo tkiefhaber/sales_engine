@@ -1,12 +1,12 @@
 class CustomerObject
 
-  attr_accessor :c_customer_id, :c_customer_fname, :c_customer_lname, :c_customer_created, :c_customer_updated
+  attr_accessor :id, :last_name, :first_name, :created_at, :updated_at
 
   def initialize(attributes = {})
-    self.c_customer_id        = attributes[:id]
-    self.c_customer_fname     = attributes[:first_name]
-    self.c_customer_lname     = attributes[:last_name]
-    self.c_customer_created   = attributes[:created_at]
-    self.c_customer_updated   = attributes[:updated_at]
+    self.id        = attributes[:id]
+    self.first_name     = attributes[:first_name]
+    self.last_name     = attributes[:last_name]
+    self.created_at   = attributes[:created_at]
+    self.updated_at   = attributes[:updated_at]
   end
 end
