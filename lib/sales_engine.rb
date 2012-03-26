@@ -15,9 +15,11 @@ module SalesEngine
     # puts SalesEngine::Merchant.random
     # puts SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").name
     # puts SalesEngine::Customer.find_all_by_first_name("Stone")
-    merchant = Merchant.random
-    merchant.items
-    merchant.invoices
+    # merchant = Merchant.random
+    # merchant.items
+    # merchant.invoices
+    customer = Customer.random
+    customer.invoices
   end
 
   # startup :db

@@ -150,77 +150,80 @@ describe SalesEngine::Invoice do
   end
 
   describe "#transactions" do
+
+    let(:merchant_instance) { Fabricate(:merchant) }
+
     it "does not return nil" do
-      SalesEngine::Invoice.transactions.should_not == nil
+      merchant_instance.transactions.should_not == nil
     end
 
     it "does not return the empty array" do
-      SalesEngine::Invoice.transactions.should_not == []
+      merchant_instance.transactions.should_not == []
     end
 
     it "returns a collection of SalesEngine::Item instances" do
-      SalesEngine::Invoice.transactions.sample.class.should == SalesEngine::Transasction.new.class
+      merchant_instance.transactions.sample.class.should == SalesEngine::Transasction.new.class
     end
 
     it "returns Transaction instances whose Invoice id corresponds to the Invoice searched" do
-      example_merchant = SalesEngine::Invoice
-      example_merchant.transactions.sample.send(:invoice_id) == example_merchant.invoice_id
+      example_merchant = merchant_instance
+      example_merchant.transactions.sample.send(:invoice_id) == example_merchant.id
     end
   end
 
   describe "#invoice_items" do
     it "does not return nil" do
-      SalesEngine::Invoice.invoice_items.should_not == nil
+      merchant_instance.invoice_items.should_not == nil
     end
 
     it "does not return the empty array" do
-      SalesEngine::Invoice.invocie_items.should_not == []
+      merchant_instance.invocie_items.should_not == []
     end
 
     it "returns a collection of SalesEngine::Item instances" do
-      SalesEngine::Invoice.invoice_items.sample.class.should == SalesEngine::InvoiceItem.new.class
+      merchant_instance.invoice_items.sample.class.should == merchant_instanceItem.new.class
     end
 
     it "returns InvoiceItem instances whose Invoice ids correspond to the Invoice searched" do
-      example_merchant = SalesEngine::Invoice
+      example_merchant = merchant_instance
       example_merchant.invoice_items.sample.send(:invoice_id) == example_merchant.invoice_id
     end
   end
 
   describe "#items" do
     it "does not return nil" do
-      SalesEngine::Invoice.items.should_not == nil
+      merchant_instance.items.should_not == nil
     end
 
     it "does not return the empty array" do
-      SalesEngine::Invoice.items.should_not == []
+      merchant_instance.items.should_not == []
     end
 
     it "returns a collection of SalesEngine::Item instances" do
-      SalesEngine::Invoice.items.sample.class.should == SalesEngine::Item.new.class
+      merchant_instance.items.sample.class.should == SalesEngine::Item.new.class
     end
 
     it "returns Item instances whose Invoice ids correspond to the Invoice searched" do
-      example_merchant = SalesEngine::Invoice
+      example_merchant = merchant_instance
       example_merchant.items.sample.send(:invoice_id) == example_merchant.invoice_id
     end
   end
 
   describe "#customer" do
     it "does not return nil" do
-      SalesEngine::Invoice.customer.should_not == nil
+      merchant_instance.customer.should_not == nil
     end
 
     it "does not return the empty array" do
-      SalesEngine::Invoice.customer.should_not == []
+      merchant_instance.customer.should_not == []
     end
 
     it "returns a collection of SalesEngine::Customer instances" do
-      SalesEngine::Invoice.customer.sample.class.should == SalesEngine::Customer.new.class
+      merchant_instance.customer.sample.class.should == SalesEngine::Customer.new.class
     end
 
     it "returns Customer instance whose Invoice ids correspond to the Invoice searched" do
-      example_merchant = SalesEngine::Invoice
+      example_merchant = merchant_instance
       example_merchant.customer.sample.send(:invoice_id) == example_merchant.invoice_id
     end
   end

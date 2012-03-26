@@ -33,28 +33,26 @@ module SalesEngine
       end
     end
 
+    def items=(input)
+      @items = input
+    end
+
     def items
       # returns the items for a given instance of merchant
-      @results = []
-      puts self.id
-      SalesEngine::Database.instance.items_data.select do |item_object|
-        if self.id == item_object.send(:merchant_id)
-          @results << item_object
-        end
+      @items || SalesEngine::Database.instance.items_data.select do |item_object|
+        self.id == item_object.send(:merchant_id)          
       end
-      puts @results
+    end
+
+    def invoices=(input)
+      @invoices = input
     end
 
     def invoices
       # returns the items for a given instance of merchant
-      @results = []
-      puts self.id
-      SalesEngine::Database.instance.invoices_data.select do |item_object|
-        if self.id == item_object.send(:merchant_id)
-          @results << item_object
-        end
+      @invoices || SalesEngine::Database.instance.invoices_data.select do |item_object|
+        self.id == item_object.send(:merchant_id) 
       end
-      puts @results
     end
 
   end

@@ -34,6 +34,16 @@ module SalesEngine
       end
     end
 
+    def invoices=(input)
+      @invoices = input
+    end
+
+    def invoices
+      # returns the items for a given instance of merchant
+      @invoices || SalesEngine::Database.instance.invoices_data.select do |item_object|
+        self.id == item_object.send(:customer_id) 
+      end
+    end
 
   end
 end

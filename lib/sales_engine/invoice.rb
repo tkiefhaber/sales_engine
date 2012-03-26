@@ -35,6 +35,18 @@ module SalesEngine
       end
     end
 
+    def transactions
+      # returns the items for a given instance of merchant
+      @results = []
+      puts self.id
+      SalesEngine::Database.instance.transactions_data.select do |item_object|
+        if self.id == item_object.send(:invoice_id)
+          @results << item_object
+        end
+      end
+      puts @results
+    end
+
   end
 
 end
