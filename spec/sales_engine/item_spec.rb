@@ -178,5 +178,44 @@ describe SalesEngine::Item do
       end
 
     end
-  end 
+  end
+
+  describe "#invoice_items" do
+    it "does not return nil" do
+      SalesEngine::Item.invoice_items.should_not == nil
+    end
+
+    it "does not return the empty array" do
+      SalesEngine::Item.invoice_items.should_not == []
+    end
+
+    it "returns a collection of SalesEngine::Item instances" do
+      SalesEngine::Item.invoice_items.sample.class.should == SalesEngine::InvoiceItem.new.class
+    end
+
+    it "returns InvoiceItem instances whose Item ids correspond to the Merchant searched" do
+      example_merchant = SalesEngine::Item
+      example_merchant.invoice_items.sample.send(:item_id) == example_merchant.item_id
+    end
+  end
+
+  describe "#merchant" do
+    it "does not return nil" do
+      SalesEngine::Item.merchant.should_not == nil
+    end
+
+    it "does not return the empty array" do
+      SalesEngine::Item.merchant.should_not == []
+    end
+
+    it "returns a collection of SalesEngine::Item instances" do
+      SalesEngine::Item.merchant.sample.class.should == SalesEngine::Merchant.new.class
+    end
+
+    it "returns Merchant instances whose Item id corresponds to the Item searched" do
+      example_merchant = SalesEngine::Item
+      example_merchant.merchant.sample.send(:item_id) == example_merchant.item_id
+    end
+  end
+
 end

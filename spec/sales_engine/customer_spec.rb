@@ -141,5 +141,24 @@ describe SalesEngine::Customer do
       end
 
     end
+  end
+
+  describe "#invoices" do
+    it "does not return nil" do
+      SalesEngine::Customer.invoices.should_not == nil
+    end
+
+    it "does not return the empty array" do
+      SalesEngine::Customer.invoices.should_not == []
+    end
+
+    it "returns a collection of SalesEngine::Item instances" do
+      SalesEngine::Customer.invoices.sample.class.should == SalesEngine::Invoice.new.class
+    end
+
+    it "returns Invoice instances whose Customer ids correspond to the Customer searched" do
+      example_merchant = SalesEngine::Customer
+      example_merchant.invoices.sample.send(:customer_id) == example_merchant.customer_id
+    end
   end 
 end
