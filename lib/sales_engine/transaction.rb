@@ -24,5 +24,6 @@ module SalesEngine
         self.invoice_id == invoice_object.send(:id)
       end
     end
+
   end
 end

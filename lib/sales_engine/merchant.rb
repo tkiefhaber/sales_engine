@@ -11,6 +11,14 @@ module SalesEngine
       self.updated_at   = attributes[:updated_at]
     end
 
+    def items=(input)
+      @items = input
+    end
+
+    def invoices=(input)
+      @invoices = input
+    end
+
     def self.random
       return SalesEngine::Database.instance.merchants_data.sample
     end
@@ -33,18 +41,10 @@ module SalesEngine
       end
     end
 
-    def items=(input)
-      @items = input
-    end
-
     def items
       @items || SalesEngine::Database.instance.items_data.select do |item_object|
         self.id == item_object.send(:merchant_id)       
       end
-    end
-
-    def invoices=(input)
-      @invoices = input
     end
 
     def invoices
@@ -52,6 +52,37 @@ module SalesEngine
         self.id == invoice_object.send(:merchant_id)
       end
     end
+
+    def total_revenue
+
+      #self.invoices.map 
+
+      #in InvioceItems we want to take the 
+
+      # unit price for every item sold for each merchant
+      # figure out how many items were sold
+      # price * quantity
+      # rank merchants
+    end
+
+    def get_all_invoice_items_for_single_merchant
+      invoices.map do |invoice|
+        invoice.invoice_items
+      end
+    end
+
+    def get_revenue_for_single_merchant
+      get_all_invoice_items_for_single_merchant.each do |invoice_item_block|
+        invoice_item_block.each do |invoice_item|
+          puts "#{invoice_item.quantity * invoice_item.unit_price}"
+        end
+      end
+        # puts "New block:"
+        # puts invoice_item_block
+    end
+
+
+
 
   end
 end

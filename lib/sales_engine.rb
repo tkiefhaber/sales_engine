@@ -15,9 +15,9 @@ module SalesEngine
     # puts SalesEngine::Merchant.random
     # puts SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").name
     # puts SalesEngine::Customer.find_all_by_first_name("Stone")
-    # merchant = Merchant.random
+    merchant = Merchant.random
     # merchant.items
-    # merchant.invoices
+    merchant.get_revenue_for_single_merchant
     # customer = Customer.random
     # customer.invoices
     # transaction = Database.instance.transactions_data.sample
@@ -33,6 +33,7 @@ module SalesEngine
     # invoice_item_example = Database.instance.invoice_items_data.sample
     # puts "This is the invoice id: #{invoice_item_example.invoice.id}"
     # puts "This is hte item id: #{invoice_item_example.item.id}"
+    # invoice_example.successful? 
 
   end
 

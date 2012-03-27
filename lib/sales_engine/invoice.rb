@@ -85,5 +85,15 @@ module SalesEngine
       end
     end
 
+    def successful?
+      transactions.each do |t|
+        if t.result == "success"
+          true
+        else
+          false
+        end
+      end
+    end
+
   end
 end

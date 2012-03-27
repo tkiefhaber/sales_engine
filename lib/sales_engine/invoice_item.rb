@@ -8,8 +8,8 @@ module SalesEngine
       self.id                  = attributes[:id]
       self.item_id             = attributes[:item_id]
       self.invoice_id          = attributes[:invoice_id]
-      self.quantity            = attributes[:quantity]
-      self.unit_price          = attributes[:unit_price]
+      self.quantity            = attributes[:quantity].to_i
+      self.unit_price          = attributes[:unit_price].to_i
       self.created_at          = attributes[:created_at]
       self.updated_at          = attributes[:updated_at]
     end
