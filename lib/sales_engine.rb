@@ -18,8 +18,22 @@ module SalesEngine
     # merchant = Merchant.random
     # merchant.items
     # merchant.invoices
-    customer = Customer.random
-    customer.invoices
+    # customer = Customer.random
+    # customer.invoices
+    # transaction = Database.instance.transactions_data.sample
+    # puts transaction.invoice.sample.send(:id)
+    # item_example = Item.random
+    # puts item_example.merchants.sample.send(:name)
+    # item_example = Item.random
+    # puts item_example.invoice_items.sample.send(:id)
+    # invoice_example = Invoice.random
+    # puts invoice_example.invoice_items.sample.send(:invoice_id)
+    # puts invoice_example.items
+    # puts invoice_example.customer.id
+    # invoice_item_example = Database.instance.invoice_items_data.sample
+    # puts "This is the invoice id: #{invoice_item_example.invoice.id}"
+    # puts "This is hte item id: #{invoice_item_example.item.id}"
+
   end
 
   # startup :db

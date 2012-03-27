@@ -14,6 +14,31 @@ module SalesEngine
       self.updated_at          = attributes[:updated_at]
     end
   
+    def invoice=(input)
+      # self.merchant_id = input.id
+      @invoice = input
+    end
+
+    def item=(input)
+      # self.merchant_id = input.id
+      @item = input
+    end
+
+    def invoice
+      puts "This is the invoice id: #{self.invoice_id}"
+      # returns the items for a given instance of merchant
+      @invoice || SalesEngine::Database.instance.invoices_data.find do |invoice_object|
+        self.invoice_id == invoice_object.send(:id)
+      end
+    end
+
+    def item
+      puts "This is the item id: #{self.item_id}"
+      # returns the items for a given instance of merchant
+      @item || SalesEngine::Database.instance.items_data.find do |item_object|
+        self.item_id == item_object.send(:id)
+      end
+    end
 
   end
 end

@@ -38,9 +38,8 @@ module SalesEngine
     end
 
     def items
-      # returns the items for a given instance of merchant
       @items || SalesEngine::Database.instance.items_data.select do |item_object|
-        self.id == item_object.send(:merchant_id)          
+        self.id == item_object.send(:merchant_id)       
       end
     end
 
@@ -49,9 +48,8 @@ module SalesEngine
     end
 
     def invoices
-      # returns the items for a given instance of merchant
-      @invoices || SalesEngine::Database.instance.invoices_data.select do |item_object|
-        self.id == item_object.send(:merchant_id) 
+      @invoices || SalesEngine::Database.instance.invoices_data.select do |invoice_object|
+        self.id == invoice_object.send(:merchant_id)
       end
     end
 

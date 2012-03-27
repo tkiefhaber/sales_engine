@@ -14,5 +14,15 @@ module SalesEngine
       self.updated_at             = attributes[:updated_at]
     end
 
+    def invoice=(input)
+      @invoice = input
+    end
+
+    def invoice
+      puts self.invoice_id
+      @invoice || SalesEngine::Database.instance.invoices_data.select do |invoice_object|
+        self.invoice_id == invoice_object.send(:id)
+      end
+    end
   end
 end

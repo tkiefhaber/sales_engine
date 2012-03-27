@@ -5,7 +5,7 @@ Fabricator(:merchant, :class_name => "SalesEngine::Merchant") do
   name { Faker::Name.name }
   created_at { Time.now }
   updated_at { Time.now }
-  items { [Fabricate(:item), Fabricate(:item)] }
-  invoices { [Fabricate(:invoice), Fabricate(:invoice)] }
+  items { |merchant| [Fabricate(:item, :merchant => merchant), Fabricate(:item, :merchant => merchant)] }
+  invoices { |merchant| [Fabricate(:invoice, :merchant => merchant), Fabricate(:invoice, :merchant => merchant)] }
 end
 

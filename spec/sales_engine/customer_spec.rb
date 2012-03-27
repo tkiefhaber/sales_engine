@@ -145,7 +145,7 @@ describe SalesEngine::Customer do
 
   describe "#invoices" do
 
-    let(:merchant_instance) { Fabricate(:merchant) }
+    let(:customer_instance) { Fabricate(:customer) }
 
     it "does not return nil" do
       merchant_instance.invoices.should_not == nil

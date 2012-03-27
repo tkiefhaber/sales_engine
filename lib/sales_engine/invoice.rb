@@ -35,18 +35,55 @@ module SalesEngine
       end
     end
 
+    def transactions=(input)
+      # self.merchant_id = input.id
+      @transactions = input
+    end
+
     def transactions
-      # returns the items for a given instance of merchant
-      @results = []
       puts self.id
-      SalesEngine::Database.instance.transactions_data.select do |item_object|
-        if self.id == item_object.send(:invoice_id)
-          @results << item_object
-        end
+      # returns the items for a given instance of merchant
+      @transactions || SalesEngine::Database.instance.transactions_data.select do |transaction_object|
+        self.id == transaction_object.send(:invoice_id)
       end
-      puts @results
+    end
+
+    def invoice_items=(input)
+      # self.merchant_id = input.id
+      @invoice_items = input
+    end
+
+    def invoice_items
+      # returns the items for a given instance of merchant
+      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item_object|
+        self.id == invoice_item_object.send(:invoice_id)
+      end
+    end
+
+    def customers=(input)
+      # self.merchant_id = input.id
+      @customers = input
+    end
+
+    def customer
+      puts "This is the invoice: #{self.id}"
+      # returns the items for a given instance of merchant
+      @customer ||= SalesEngine::Database.instance.customers_data.find do |customers_object|
+        self.customer_id == customers_object.send(:id)
+      end
+    end
+
+    def items=(input)
+      # self.merchant_id = input.id
+      @items = input
+    end
+
+    def items
+      puts "This is the invoice id: #{self.id}"
+      invoice_items.map do |invoice_item|
+        invoice_item.item
+      end
     end
 
   end
-
 end
