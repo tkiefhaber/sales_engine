@@ -34,29 +34,29 @@ module SalesEngine
       CSV.open(filename, CSV_OPTIONS)
     end
 
-    # def add_merchant(merchant)
-    #   self.merchants_data << merchant
-    # end
+    def add_merchant(merchant)
+      self.merchants_data << merchant
+    end
 
-    # def add_invoice(invoice)
-    #   self.invoices_data << invoice
-    # end
+    def add_invoice(invoice)
+      self.invoices_data << invoice
+    end
 
-    # def add_customer(customer)
-    #   self.customers_data << customer
-    # end
+    def add_customer(customer)
+      self.customers_data << customer
+    end
 
-    # def add_item(item)
-    #   self.items_data << item
-    # end
+    def add_item(item)
+      self.items_data << item
+    end
 
-    # def add_invoice_item(invoice_item)
-    #   self.invoice_items_data << invoice_item
-    # end
+    def add_invoice_item(invoice_item)
+      self.invoice_items_data << invoice_item
+    end
 
-    # def add_transaction (transaction)
-    #   self.transactions_data << transaction
-    # end
+    def add_transaction (transaction)
+      self.transactions_data << transaction
+    end
 
   end
 end

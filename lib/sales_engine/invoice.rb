@@ -61,51 +61,52 @@ module SalesEngine
     end
 
     def transactions=(input)
-      # self.merchant_id = input.id
       @transactions = input
     end
 
     def transactions
-      @transactions || SalesEngine::Database.instance.transactions_data.select do |transaction_object|
-        self.id == transaction_object.invoice_id
+      @transactions || SalesEngine::Database.instance.transactions_data.select do |transaction|
+        transaction.invoice_id == self.id
       end
     end
 
     def invoice_items=(input)
-      # self.merchant_id = input.id
       @invoice_items = input
     end
 
     def invoice_items
-      # returns the items for a given instance of merchant
-      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item_object|
-        self.id == invoice_item_object.send(:invoice_id)
+      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item|
+        self.id == invoice_item.invoice_id
       end
     end
 
     def customer=(input)
-      # self.merchant_id = input.id
       @customer = input
     end
 
     def customer
-      # puts "This is the invoice: #{self.id}"
-      # returns the items for a given instance of merchant
-      @customer ||= SalesEngine::Database.instance.customers_data.each do |customer_object|
-        if customer_object.id == self.customer_id
-          return customer_object
+      @customer ||= SalesEngine::Database.instance.customers_data.each do |customer|
+        if customer.id == self.customer_id
+          return customer
+        end
+      end
+    end
+
+    def merchant
+      @merchant ||= SalesEngine::Database.instance.merchants_data.each do |merchant|
+        if merchant.id == self.merchant_id
+          return merchant
         end
       end
     end
 
     def items=(input)
-      # self.merchant_id = input.id
       @items = input
     end
 
     def items
-      @items || SalesEngine::Database.instance.items_data.select do |item_object|
-        self.id == item_object.send(:invoice_id)      
+      invoice_items.map do |invoice_item|
+        invoice_item.item
       end
     end
 
@@ -113,14 +114,37 @@ module SalesEngine
       transactions.any?(&:successful?)
     end
 
+    def total
+      @total ||= invoice_items.map do |inv_item|
+        inv_item.total
+      end.inject(:+)
+    end
+
     def successful?
       transactions.each do |t|
-        if t.result == "success"
-          true
-        else
-          false
-        end
+        t.result == "success"
       end
+    end
+
+    def self.create(attributes= {})
+      i = Invoice.new(:id       => find_new_invoice_id, 
+                  :customer     => attributes[:customer], 
+                  :merchant     => attributes[:merchant], 
+                  :status       => attributes[:status],
+                  :created_at   => Time.now.to_s,
+                  :updated_at   => Time.now.to_s,
+                  :items        => attributes[:items])
+      SalesEngine::InvoiceItem.create_invoice_items(attributes[:id], attributes[:items])
+      SalesEngine::Database.instance.add_invoice(i)
+      i
+    end
+
+    def self.charge(attributes={})
+      SalesEngine::Transaction.create(attributes)
+    end
+
+    def self.find_new_invoice_id
+      SalesEngine::Database.instance.invoices_data.size.to_i + 1
     end
 
   end

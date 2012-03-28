@@ -24,20 +24,73 @@ module SalesEngine
       @item = input
     end
 
+    def total
+      @total ||= quantity * unit_price
+    end
+
     def invoice
-      puts "This is the invoice id: #{self.invoice_id}"
-      # returns the items for a given instance of merchant
       @invoice || SalesEngine::Database.instance.invoices_data.find do |invoice_object|
         self.invoice_id == invoice_object.send(:id)
       end
     end
 
     def item
-      puts "This is the item id: #{self.item_id}"
-      # returns the items for a given instance of merchant
       @item || SalesEngine::Database.instance.items_data.find do |item_object|
         self.item_id == item_object.send(:id)
       end
     end
+
+    # def self.create_invoice_item_from_invoice(id, items)
+    #   figure_out_item_quantity(items)
+    #    items.each do |item|
+    #      item(:invoice_id => id)
+    #      item(:quantity => item_quantity[item.id])
+    #      SalesEngine::Invoice.create(item)
+    #   end
+    # end
+
+    # def self.figure_out_item_quantity(items)
+    #   items_hash = {}
+    #   items.each do |item|
+    #     items_hash[item.id] = [items.count(item), item.unit_price]
+    #   end
+    #   items_hash
+    # end
+
+
+    def self.create_invoice_items(invoice_id, items)
+      items_hash = {}
+      items.each do |item|
+        items_hash[item.id] = [items.count(item), item.unit_price]
+      end
+
+      items_hash.each do |item_id, values|
+        ii = InvoiceItem.new(:id          => find_new_invoice_item_id,
+                             :item_id     => item_id, 
+                             :invoice_id  => invoice_id,
+                             :quantity    => values[0], 
+                             :unit_price  => values[1],
+                             :created_at  => Time.now.to_s,
+                             :updated_at  => Time.now.to_s )
+        SalesEngine::Database.instance.add_invoice_item(ii)
+      end
+    end
+
+    def self.find_new_invoice_item_id
+      SalesEngine::Database.instance.invoice_items_data.size.to_i + 1
+    end
+
+
+    # def self.create(attributes={})
+    #   ii = InvoiceItem.new(:id             => attributes[:id], 
+    #                   :item_id             => attributes[:item_id],
+    #                   :invoice_id          => attributes[:invoice_id],
+    #                   :quantity            => attributes[:quantity],
+    #                   :unit_price          => attributes[:unit_price].to_i,
+    #                   :created_at          => Time.now.to_s,
+    #                   :updated_at          => Time.now.to_s)
+    #   SalesEngine::Database.add_invoice_item(ii)
+    # end
+
   end
 end

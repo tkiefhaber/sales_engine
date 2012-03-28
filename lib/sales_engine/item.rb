@@ -10,8 +10,8 @@ module SalesEngine
       self.description       = attributes[:description]
       self.unit_price        = attributes[:unit_price]
       self.merchant_id       = attributes[:merchant_id]
-      self.created_at        = attributes[:created_at]
-      self.updated_at        = attributes[:updated_at]
+      self.created_at        = Date.parse(attributes[:created_at])
+      self.updated_at        = Date.parse(attributes[:updated_at])
     end
 
     def self.random
@@ -52,24 +52,82 @@ module SalesEngine
     end
 
     def merchant
-      # returns the items for a given instance of merchant
       @merchant || SalesEngine::Database.instance.merchants_data.select do |merchant_object|
         self.merchant_id == merchant_object.send(:id)
       end
     end
 
     def invoice_items=(input)
-      # self.merchant_id = input.id
       @invoice_items = input
     end
 
     def invoice_items
-      puts self.id
-      # returns the items for a given instance of merchant
       @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item_object|
         self.id == invoice_item_object.send(:item_id)
       end
     end
+
+    def self.most_revenue(x)
+      all_items = Database.instance.items_data
+      sorted = all_items.sort_by { |item| -item.revenue }
+      sorted[0...x]
+    end
+
+    def revenue
+      @revenue ||= self.invoice_items.inject(0) do |sum, invoice_item|
+         sum += invoice_item.quantity.to_i * invoice_item.unit_price.to_i
+       end
+    end
+
+    def self.most_items(x)
+      all_items = Database.instance.items_data
+      sorted = all_items.sort_by { |item| -item.items_sold }
+      sorted[0...x]
+    end
+
+    def items_sold
+      @items_sold ||= self.invoice_items.inject(0) do |sum, invoice_item|
+        sum += invoice_item.quantity
+      end
+    end
+
+    def best_day
+      days = Hash.new { |hash, key|  hash[key] = 0 }
+      self.invoice_items.each do |invoice_item|
+        days[invoice_item.invoice.created_at] += invoice_item.quantity.to_i
+      end
+      days.sort_by {|key, value| -value }.first.first
+    end
+
+
+    # def paid_invoices
+    #   @invoices = SalesEngine::Database.instance.invoices_data.select do |invoice|
+    #     invoice.paid?
+    #   end
+    # end
+
+
+    # def self.most_revenue(x=1)
+    #   all_merchants = Database.instance.merchants_data
+    #   sorted = all_merchants.sort_by { |merchant| -merchant.revenue }
+    #   sorted[0...x]
+    # end
+
+    # def revenue(date=nil)
+    #   if date 
+    #     invoices_by_date(date).inject(0) do |revenue, invoice|
+    #       revenue += invoice.invoice_items.inject(0) do |sum, invoice_item|
+    #         sum += invoice_item.quantity * invoice_item.unit_price
+    #       end
+    #     end
+    #   else
+    #     @revenue ||= self.paid_invoices.inject(0) do |revenue, invoice|
+    #       revenue += invoice.invoice_items.inject(0) do |sum, invoice_item|
+    #         sum += invoice_item.quantity * invoice_item.unit_price
+    #       end
+    #     end
+    #   end
+    # end
 
   end
 end

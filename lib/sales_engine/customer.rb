@@ -48,17 +48,37 @@ module SalesEngine
     end
 
     def invoices
-      # returns the items for a given instance of merchant
-      @invoices || SalesEngine::Database.instance.invoices_data.select do |item_object|
-        self.id == item_object.send(:customer_id) 
+      @invoices ||= SalesEngine::Database.instance.invoices_data.select do |invoice|
+        self.id == invoice.customer_id
       end
     end
 
-    def successful_transactions
-      self.invoices.select do |transaction|
-        transaction.successful?
+    def transactions
+      invoices.collect do |invoice|
+        invoice.transactions
       end
+    end
 
+    def merchants
+      @merchants ||= self.invoices.collect do |invoice|
+        invoice.merchant
+      end
+    end
+
+    def favorite_merchant
+      merchant_by_transaction.first
+    end
+
+    def merchant_by_transaction
+      merchants.sort_by do |merchant|
+        -merchant.invoices_with_successful_transactions.size
+      end
+    end
+
+    def invoices_with_successful_transactions
+      self.invoices.collect do |invoice|
+        invoice.successful?
+      end
     end
 
   end
