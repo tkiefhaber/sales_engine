@@ -10,8 +10,8 @@ module SalesEngine
       self.invoice_id          = attributes[:invoice_id]
       self.quantity            = attributes[:quantity].to_i
       self.unit_price          = attributes[:unit_price].to_i
-      self.created_at          = attributes[:created_at]
-      self.updated_at          = attributes[:updated_at]
+      self.created_at          = Date.parse(attributes[:created_at])
+      self.updated_at          = Date.parse(attributes[:updated_at])
     end
   
     def invoice=(input)
@@ -39,6 +39,5 @@ module SalesEngine
         self.item_id == item_object.send(:id)
       end
     end
-
   end
 end

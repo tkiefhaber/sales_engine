@@ -1,15 +1,22 @@
 require 'spec_helper' 
 
 describe SalesEngine::Merchant do
+  let(:merchant) { Fabricate(:merchant) }
+  
   describe ".random" do
     context "when random method called" do
       it "returns a SalesEngine::Merchant" do
-        SalesEngine::Merchant.random.class.should == SalesEngine::Merchant.new.class
+        merchant.class.should == SalesEngine::Merchant.new.class
       end
     end
   end
 
-  describe ".find_by_" do
+  describe ".find_by_X" do
+    before(:each) do
+      SalesEngine::Merchant.clear_merchants
+      SalesEngine::Merchant.add_merchant(Fabricate(:merchant, :name => 'Jeff', :id => "1"))
+      SalesEngine::Merchant.add_merchant(Fabricate(:merchant, :name => 'Jeff', :id => "2"))
+    end
 
     it "takes a only valid attributes" do
       [:id, :name, :created_at, :updated_at].each do |attribute|
@@ -18,25 +25,28 @@ describe SalesEngine::Merchant do
       end
     end
 
-    it "returns only a single instance" do
-      SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").instance_of?(SalesEngine::Merchant).should == true
-      SalesEngine::Merchant.find_by_updated_at("2012-02-26 20:56:50 UTC").instance_of?(SalesEngine::Merchant).should == true
-      SalesEngine::Merchant.find_by_name("Johns Inc").instance_of?(SalesEngine::Merchant).should == true
-      SalesEngine::Merchant.find_by_id("2").instance_of?(SalesEngine::Merchant).should == true
+    it "returns only a single merchant" do
+      SalesEngine::Merchant.find_by_id("2").should be_instance_of(SalesEngine::Merchant)
     end
 
-    it "returns an instance of the SalesEngine::Merchant object" do
-      SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").class.should == SalesEngine::Merchant.new.class
-      SalesEngine::Merchant.find_by_updated_at("2012-02-26 20:56:50 UTC").class.should == SalesEngine::Merchant.new.class
-      SalesEngine::Merchant.find_by_name("Johns Inc").class.should == SalesEngine::Merchant.new.class
-      SalesEngine::Merchant.find_by_id("2").class.should == SalesEngine::Merchant.new.class
+    it "returns a matching merchant" do
+      SalesEngine::Merchant.find_by_id("2").id.should == "2"
     end
 
-    it "returns an instance containing a matching attribute" do
-      SalesEngine::Merchant.find_by_created_at("2012-02-26 20:56:50 UTC").respond_to?(:created_at).should == true
-      SalesEngine::Merchant.find_by_updated_at("2012-02-26 20:56:50 UTC").respond_to?(:updated_at).should == true
-      SalesEngine::Merchant.find_by_name("Johns Inc").respond_to?(:name).should == true
-      SalesEngine::Merchant.find_by_id("2").respond_to?(:id).should == true
+    it "has two elements" do
+      SalesEngine::Merchant.find_all_by_name("Jeff").count.should == 2
+    end
+
+    it "returns instances of the SalesEngine::Merchant object" do
+      SalesEngine::Merchant.find_all_by_name("Jeff").each do |merchant|
+        merchant.should be_instance_of(SalesEngine::Merchant)
+      end
+    end
+
+    it "returns SalesEngine::Merchant objects containing matching attributes" do
+      SalesEngine::Merchant.find_all_by_name("Jeff").each do |merchant|
+        merchant.name.should == "Jeff"
+      end        
     end
 
     describe "when find_by_name method is called" do
@@ -80,82 +90,89 @@ describe SalesEngine::Merchant do
       end
     end
 
-    context "when search results are found" do
-      it "returns an array of data" do
-        SalesEngine::Merchant.find_all_by_created_at("2012-02-26 20:56:50 UTC").class.should == Array
-        SalesEngine::Merchant.find_all_by_updated_at("2012-02-26 20:56:50 UTC").class.should == Array
-        SalesEngine::Merchant.find_all_by_name("Johns Inc").class.should == Array
-        SalesEngine::Merchant.find_all_by_id("2").class.should == Array
+    context "when search two results are found" do
+      before(:each) do
+        SalesEngine::Merchant.clear_merchants
+        SalesEngine::Merchant.add_merchant(Fabricate(:merchant, :name => 'Jeff', :id => 1))
+        SalesEngine::Merchant.add_merchant(Fabricate(:merchant, :name => 'Jeff', :id => 2))
+      end
+
+      it "has two elements" do
+        SalesEngine::Merchant.find_all_by_name("Jeff").count.should == 2
       end
 
       it "returns instances of the SalesEngine::Merchant object" do
-        SalesEngine::Merchant.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.class.should == SalesEngine::Merchant.new.class
-        SalesEngine::Merchant.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.class.should == SalesEngine::Merchant.new.class
-        SalesEngine::Merchant.find_all_by_name("Johns Inc").sample.class.should == SalesEngine::Merchant.new.class
-        SalesEngine::Merchant.find_all_by_id("2").sample.class.should == SalesEngine::Merchant.new.class
+        SalesEngine::Merchant.find_all_by_name("Jeff").each do |merchant|
+          merchant.should be_instance_of(SalesEngine::Merchant)
+        end
       end
 
       it "returns SalesEngine::Merchant objects containing matching attributes" do
-        SalesEngine::Merchant.find_all_by_created_at("2012-02-26 20:56:50 UTC").sample.respond_to?(:created_at).should == true
-        SalesEngine::Merchant.find_all_by_updated_at("2012-02-26 20:56:50 UTC").sample.respond_to?(:updated_at).should == true
-        SalesEngine::Merchant.find_all_by_name("Johns Inc").sample.respond_to?(:name).should == true
-        SalesEngine::Merchant.find_all_by_id("2").sample.respond_to?(:id).should == true
+        SalesEngine::Merchant.find_all_by_name("Jeff").each do |merchant|
+          merchant.name.should == "Jeff"
+        end        
       end
 
     end
 
 
     context "when no search results are found" do
-
-      it "returns the empty array" do
-        SalesEngine::Merchant.find_all_by_created_at("2012-02-26 20:56:50").should == []
-        SalesEngine::Merchant.find_all_by_updated_at("2012-02-26 UTC").should == []
-        SalesEngine::Merchant.find_all_by_name("Hot Pies!!").should == []
-        SalesEngine::Merchant.find_all_by_id("140").should == []
+      before(:each) do
+        SalesEngine::Merchant.clear_merchants
+        SalesEngine::Merchant.add_merchant(Fabricate(:merchant, :name => 'Jeff', :id => 1))
       end
 
+      it "returns the empty array" do
+        SalesEngine::Merchant.find_all_by_name("Jan").should be_empty
+      end
     end
   end 
 
   describe "#items" do
 
-    let(:merchant_instance) { Fabricate(:merchant) }
+    let(:merchant) { Fabricate(:merchant_with_items) }
 
     it "does not return nil" do
-      merchant_instance.items.should_not == nil
+      merchant.items.should_not == nil
     end
 
     it "does not return the empty array" do
-      merchant_instance.items.should_not == []
+      merchant.items.should_not == []
     end
 
     it "returns a collection of SalesEngine::Item instances" do
-      merchant_instance.items.sample.class.should == SalesEngine::Item.new.class
+      merchant.items.each do |item|
+        item.should be_a(SalesEngine::Item)
+      end
     end
 
     it "returns Item instances whose Merchant ids correspond to the Merchant searched" do
-      merchant_instance.items.sample.send(:merchant_id) == merchant_instance.id
+      merchant.items.sample.send(:merchant_id) == merchant.id
     end
   end
 
   describe "#invoices" do
 
-    let(:merchant_instance) { Fabricate(:merchant) }
+    let(:merchant) { Fabricate(:merchant_with_items_and_invoices) }
 
     it "does not return nil" do
-      merchant_instance.invoices.should_not == nil
+      merchant.invoices.should_not == nil
     end
 
     it "does not return the empty array" do
-      merchant_instance.invoices.should_not == []
+      merchant.invoices.should_not be_empty
     end
 
     it "returns a collection of SalesEngine::Item instances" do
-      merchant_instance.invoices.sample.class.should == SalesEngine::Invoice.new.class
+      merchant.invoices.each do |invoice|
+        invoice.should be_a(SalesEngine::Invoice)
+      end
     end
 
     it "returns Invoice instances whose Merchant ids correspond to the Merchant searched" do
-      merchant_instance.invoices.sample.send(:merchant_id) == merchant_instance.id
+      merchant.invoices.each do |invoice|
+        invoice.merchant_id.should == merchant.id
+      end
     end
   end
 

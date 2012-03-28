@@ -2,22 +2,37 @@ module SalesEngine
 
   class Invoice
 
-    attr_accessor :results, :input, :id, :customer_id, :merchant_id, :status, :created_at, :updated_at
+    attr_accessor :results, :input, :id, :customer_id, :merchant_id, :status, :created_at, :updated_at, :merchant
 
     def initialize(attributes = {})
       self.id               = attributes[:id]
       self.customer_id      = attributes[:customer_id]
       self.merchant_id      = attributes[:merchant_id]
       self.status           = attributes[:status]
-      self.created_at       = attributes[:created_at]
-      self.updated_at       = attributes[:updated_at]
+      self.created_at       = Date.parse(attributes[:created_at])
+      self.updated_at       = Date.parse(attributes[:updated_at])
     end
 
     def self.random
       return SalesEngine::Database.instance.invoices_data.sample
     end
 
+    def paid?
+      self.transactions.any? do |transaction|
+        transaction.successful?
+      end
+    end
+
     class << self
+
+      def add_invoice(invoice)
+        SalesEngine::Database.instance.invoices_data << invoice
+      end
+
+      def clear_invoices
+        SalesEngine::Database.instance.invoices_data = []
+      end
+
       [:id, :customer_id, :merchant_id, :status, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
           @input = parameter.downcase
@@ -35,16 +50,24 @@ module SalesEngine
       end
     end
 
+    def merchant=(input)
+      self.merchant_id = input.id
+      @merchant = input
+    end
+
+    def transaction=(input)
+      # self.merchant_id = input.id
+      @transaction = input
+    end
+
     def transactions=(input)
       # self.merchant_id = input.id
       @transactions = input
     end
 
     def transactions
-      puts self.id
-      # returns the items for a given instance of merchant
       @transactions || SalesEngine::Database.instance.transactions_data.select do |transaction_object|
-        self.id == transaction_object.send(:invoice_id)
+        self.id == transaction_object.invoice_id
       end
     end
 
@@ -60,16 +83,18 @@ module SalesEngine
       end
     end
 
-    def customers=(input)
+    def customer=(input)
       # self.merchant_id = input.id
-      @customers = input
+      @customer = input
     end
 
     def customer
-      puts "This is the invoice: #{self.id}"
+      # puts "This is the invoice: #{self.id}"
       # returns the items for a given instance of merchant
-      @customer ||= SalesEngine::Database.instance.customers_data.find do |customers_object|
-        self.customer_id == customers_object.send(:id)
+      @customer ||= SalesEngine::Database.instance.customers_data.each do |customer_object|
+        if customer_object.id == self.customer_id
+          return customer_object
+        end
       end
     end
 
@@ -79,10 +104,13 @@ module SalesEngine
     end
 
     def items
-      puts "This is the invoice id: #{self.id}"
-      invoice_items.map do |invoice_item|
-        invoice_item.item
+      @items || SalesEngine::Database.instance.items_data.select do |item_object|
+        self.id == item_object.send(:invoice_id)      
       end
+    end
+
+    def paid?
+      transactions.any?(&:successful?)
     end
 
     def successful?

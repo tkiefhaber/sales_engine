@@ -9,7 +9,6 @@ module SalesEngine
   CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
 
     def initialize(filename, class_object)
-      @target_class = class_object
       @loaded_data = []
       csv_open(filename)
     end
@@ -21,7 +20,6 @@ module SalesEngine
     def loading_data(file)
       file.rewind
       @loaded_data = file.collect { |line| @target_class.new(line) }
-      return @loaded_data
     end 
   end
 end

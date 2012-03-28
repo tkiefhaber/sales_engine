@@ -1,29 +1,61 @@
 require 'singleton'
+require 'csv'
 
 module SalesEngine
 
   class Database
     include Singleton
 
-    attr_accessor :invoice_items_data, :invoices_data, :transactions_data, :items_data, :merchants_data, :customers_data
+    attr_accessor :invoice_items_data, :invoices_data, :transactions_data, :items_data, :merchants_data, :customers_data, :file_folder
 
-    def initialize
-      @invoice_items_data   = SalesEngine::StartupLoader.new("data/invoice_items.csv", InvoiceItem).loaded_data
-      @invoices_data        = SalesEngine::StartupLoader.new("data/invoices.csv", Invoice).loaded_data
-      @transactions_data    = SalesEngine::StartupLoader.new("data/transactions.csv", Transaction).loaded_data
-      @items_data           = SalesEngine::StartupLoader.new("data/items.csv", Item).loaded_data
-      @merchants_data       = SalesEngine::StartupLoader.new("data/merchants.csv", Merchant).loaded_data
-      @customers_data       = SalesEngine::StartupLoader.new("data/customers.csv", Customer).loaded_data
+    def initialize(file_folder = "data/")
+      @file_folder = file_folder
+      # clear
+
+      # load_data
     end
 
-    # def merchants_data
-    #   @merchants_data
+    def load_data
+      @invoice_items_data   = load("data/invoice_items.csv", InvoiceItem)
+      @invoices_data        = load("data/invoices.csv", Invoice)
+      @transactions_data    = load("data/transactions.csv", Transaction)
+      @items_data           = load("data/items.csv", Item)
+      @merchants_data       = load("data/merchants.csv", Merchant)
+      @customers_data       = load("data/customers.csv", Customer)
+    end
+
+    def load(filename, klass)
+      file = csv_open(filename)
+      file.rewind
+      file.collect { |line| klass.new(line) }
+    end
+
+    def csv_open(filename)
+      CSV.open(filename, CSV_OPTIONS)
+    end
+
+    # def add_merchant(merchant)
+    #   self.merchants_data << merchant
     # end
 
-    # def query
-    #   @merchants_data.each do |record| 
-    #     puts record.m_merchant_name
-    #   end
+    # def add_invoice(invoice)
+    #   self.invoices_data << invoice
+    # end
+
+    # def add_customer(customer)
+    #   self.customers_data << customer
+    # end
+
+    # def add_item(item)
+    #   self.items_data << item
+    # end
+
+    # def add_invoice_item(invoice_item)
+    #   self.invoice_items_data << invoice_item
+    # end
+
+    # def add_transaction (transaction)
+    #   self.transactions_data << transaction
     # end
 
   end

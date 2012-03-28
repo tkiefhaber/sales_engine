@@ -36,6 +36,16 @@ module SalesEngine
       end
     end
 
+    def invoice_id=(input)
+      @invoice_id = input
+    end
+
+    def invoice=(input)
+      self.invoice_id = input.id
+      @invoice = input
+    end
+
+
     def merchant=(input)
       self.merchant_id = input.id
       @merchant = input
