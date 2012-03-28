@@ -9,7 +9,7 @@ module SalesEngine
       self.item_id             = attributes[:item_id]
       self.invoice_id          = attributes[:invoice_id]
       self.quantity            = attributes[:quantity].to_i
-      self.unit_price          = attributes[:unit_price].to_i
+      self.unit_price          = BigDecimal.new(attributes[:unit_price])/100
       self.created_at          = Date.parse(attributes[:created_at])
       self.updated_at          = Date.parse(attributes[:updated_at])
     end
@@ -40,24 +40,6 @@ module SalesEngine
       end
     end
 
-    # def self.create_invoice_item_from_invoice(id, items)
-    #   figure_out_item_quantity(items)
-    #    items.each do |item|
-    #      item(:invoice_id => id)
-    #      item(:quantity => item_quantity[item.id])
-    #      SalesEngine::Invoice.create(item)
-    #   end
-    # end
-
-    # def self.figure_out_item_quantity(items)
-    #   items_hash = {}
-    #   items.each do |item|
-    #     items_hash[item.id] = [items.count(item), item.unit_price]
-    #   end
-    #   items_hash
-    # end
-
-
     def self.create_invoice_items(invoice_id, items)
       items_hash = {}
       items.each do |item|
@@ -73,6 +55,7 @@ module SalesEngine
                              :created_at  => Time.now.to_s,
                              :updated_at  => Time.now.to_s )
         SalesEngine::Database.instance.add_invoice_item(ii)
+        ii
       end
     end
 

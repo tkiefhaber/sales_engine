@@ -139,8 +139,8 @@ module SalesEngine
       i
     end
 
-    def self.charge(attributes={})
-      SalesEngine::Transaction.create(attributes)
+    def charge(attributes={})
+      SalesEngine::Transaction.create(self.id, attributes)
     end
 
     def self.find_new_invoice_id

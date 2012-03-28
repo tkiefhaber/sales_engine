@@ -8,6 +8,7 @@ require 'sales_engine/invoice'
 require 'sales_engine/invoice_item'
 require 'sales_engine/transaction'
 require 'sales_engine/startup_loader'
+require 'bigdecimal'
 
 module SalesEngine
 CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
@@ -45,8 +46,13 @@ CSV_OPTIONS = {:headers => true, :header_converters => :symbol}
     # c = Customer.random
     # puts c.first_name
     # puts c.favorite_merchant.name
-    invoice = Invoice.create(:customer => Customer.random, :merchant => Merchant.random, 
-                              :status => "shipped", :items => [Item.random, Item.random, Item.random])
+    puts invoice = Invoice.create(:customer => Customer.random, 
+                                  :merchant => Merchant.random, 
+                                  :status => "shipped", 
+                                  :items => [Item.random, Item.random, Item.random])
+    puts t = invoice.charge(:credit_card_number => "4444333322221111",
+                        :credit_card_expiration => "10/13", 
+                        :result => "success")
     # i = Invoice.random
     # i.find_new_invoice_id
 

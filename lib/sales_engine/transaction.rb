@@ -28,15 +28,20 @@ module SalesEngine
       result == "success"
     end
 
-    def self.create(attributes={})
-      t= Transaction.new(:id                  => attributes[:id],
-                      :invoice_id             => attributes[:invoice_id],
-                      :credit_card_number     => attributes[:credit_card_number],
-                      :credit_card_expiration => attributes[:credit_card_expiration],
-                      :result                 => attributes[:result],
-                      :created_at          => Time.now.to_s,
-                      :updated_at          => Time.now.to_s)
-      SalesEngine::Database.add_transaction(t)
+    def self.create(invoice_id, attributes={})
+      t = Transaction.new(:id                      => find_new_transaction_id,
+                          :invoice_id              => invoice_id,
+                          :credit_card_number      => attributes[:credit_card_number],
+                          :credit_card_expiration  => attributes[:credit_card_expiration],
+                          :result                  => attributes[:result],
+                          :created_at              => Time.now.to_s,
+                          :updated_at              => Time.now.to_s)
+      SalesEngine::Database.instance.add_transaction(t)
+      t
+    end
+
+    def self.find_new_transaction_id
+      SalesEngine::Database.instance.transactions_data.size.to_i + 1
     end
   end
 end
