@@ -2,7 +2,8 @@ module SalesEngine
 
   class Invoice
 
-    attr_accessor :results, :input, :id, :customer_id, :merchant_id, :status, :created_at, :updated_at
+    attr_accessor :results, :input, :id, :customer_id, 
+                  :merchant_id, :status, :created_at, :updated_at
 
     def initialize(attributes = {})
       self.id               = attributes[:id].to_i
@@ -19,7 +20,8 @@ module SalesEngine
 
     class << self
 
-      [:id, :customer_id, :merchant_id, :status, :created_at, :updated_at].each do |attribute|
+      [:id, :customer_id, :merchant_id, 
+        :status, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
           SalesEngine::Database.instance.invoices_data.find do |invoice|
             invoice.send(attribute) == parameter
@@ -60,19 +62,22 @@ module SalesEngine
     end    
 
     def transactions
-      @transactions || SalesEngine::Database.instance.transactions_data.select do |transaction|
+      t = SalesEngine::Database.instance.transactions_data
+      @transactions || t.select do |transaction|
         transaction.invoice_id == self.id
       end
     end
 
     def invoice_items
-      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice|
+      ii = SalesEngine::Database.instance.invoice_items_data
+      @invoice_items || ii.select do |invoice|
         self.id == invoice.invoice_id
       end
     end
 
     def customer
-      @customer ||= SalesEngine::Database.instance.customers_data.each do |customer|
+      c = SalesEngine::Database.instance.customers_data
+      @customer ||= c.each do |customer|
         if customer.id == self.customer_id
           return customer
         end
@@ -80,7 +85,8 @@ module SalesEngine
     end
 
     def merchant
-      @merchant ||= SalesEngine::Database.instance.merchants_data.each do |merchant|
+      m = SalesEngine::Database.instance.merchants_data
+      @merchant ||= m.each do |merchant|
         if merchant.id == self.merchant_id
           return merchant
         end
@@ -109,7 +115,8 @@ module SalesEngine
 
     def self.create(attributes= {})
 
-      SalesEngine::InvoiceItem.create_invoice_items(find_new_invoice_id, attributes[:items])
+      SalesEngine::InvoiceItem.create_invoice_items(find_new_invoice_id, 
+                                                    attributes[:items])
 
       i = Invoice.new(:id              => find_new_invoice_id,
                       :customer_id     => attributes[:customer].id,

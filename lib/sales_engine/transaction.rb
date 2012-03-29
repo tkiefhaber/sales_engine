@@ -2,7 +2,8 @@ module SalesEngine
 
   class Transaction
 
-    attr_accessor :id, :invoice_id, :credit_card_number, :credit_card_expiration, :result, :created_at, :updated_at
+    attr_accessor :id, :invoice_id, :credit_card_number, 
+                  :credit_card_expiration, :result, :created_at, :updated_at
 
     def initialize(attributes = {})
       self.id                       = attributes[:id].to_i
@@ -19,16 +20,17 @@ module SalesEngine
     end
 
     class << self
-      [:id, :invoice_id, :credit_card_number, :credit_card_expiration, :result, :created_at, :updated_at].each do |attribute|
+      [:id, :invoice_id, :credit_card_number, :credit_card_expiration, 
+        :result, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.transactions_data.find do |transaction|
-            transaction.send(attribute) == parameter
+          SalesEngine::Database.instance.transactions_data.find do |trans|
+            trans.send(attribute) == parameter
           end
         end
 
         define_method "find_all_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.transactions_data.select do |transaction|
-            transaction.send(attribute) == parameter
+          SalesEngine::Database.instance.transactions_data.select do |trans|
+            trans.send(attribute) == parameter
           end
         end 
       end
@@ -39,7 +41,8 @@ module SalesEngine
     end
 
     def invoice
-      @invoice ||= SalesEngine::Database.instance.invoices_data.detect do |invoice|
+      inv = SalesEngine::Database.instance.invoices_data
+      @invoice ||= inv.detect do |invoice|
         self.invoice_id == invoice.id
       end
     end
@@ -49,13 +52,13 @@ module SalesEngine
     end
 
     def self.create(invoice_id, attributes={})
-      t = Transaction.new(:id                      => find_new_transaction_id,
-                          :invoice_id              => invoice_id,
-                          :credit_card_number      => attributes[:credit_card_number],
-                          :credit_card_expiration  => attributes[:credit_card_expiration],
-                          :result                  => attributes[:result],
-                          :created_at              => Time.now.to_s,
-                          :updated_at              => Time.now.to_s)
+      t = Transaction.new(:id            => find_new_transaction_id,
+                :invoice_id              => invoice_id,
+                :credit_card_number      => attributes[:credit_card_number],
+                :credit_card_expiration  => attributes[:credit_card_expiration],
+                :result                  => attributes[:result],
+                :created_at              => Time.now.to_s,
+                :updated_at              => Time.now.to_s)
       SalesEngine::Database.instance.add_transaction(t)
       t
     end

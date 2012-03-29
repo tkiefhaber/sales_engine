@@ -6,7 +6,9 @@ module SalesEngine
   class Database
     include Singleton
 
-    attr_accessor :invoice_items_data, :invoices_data, :transactions_data, :items_data, :merchants_data, :customers_data
+    attr_accessor :invoice_items_data, :invoices_data, 
+                  :transactions_data, :items_data, 
+                  :merchants_data, :customers_data
 
     def load_data
       @invoice_items_data   = load("data/invoice_items.csv", InvoiceItem)

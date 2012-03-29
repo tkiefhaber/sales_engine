@@ -2,16 +2,18 @@ module SalesEngine
   
   class Item
 
-    attr_accessor :results, :input, :id, :name, :description, :unit_price, :merchant_id, :created_at, :updated_at
+    attr_accessor :results, :input, :id, :name, 
+                  :description, :unit_price, :merchant_id, 
+                  :created_at, :updated_at
 
     def initialize(attributes = {})
-      self.id                = attributes[:id].to_i
-      self.name              = attributes[:name]
-      self.description       = attributes[:description]
-      self.unit_price        = BigDecimal.new(attributes[:unit_price].to_s)/100
-      self.merchant_id       = attributes[:merchant_id].to_i
-      self.created_at        = Date.parse(attributes[:created_at].to_s)
-      self.updated_at        = Date.parse(attributes[:updated_at].to_s)
+      self.id             = attributes[:id].to_i
+      self.name           = attributes[:name]
+      self.description    = attributes[:description]
+      self.unit_price     = BigDecimal.new(attributes[:unit_price].to_s)/100
+      self.merchant_id    = attributes[:merchant_id].to_i
+      self.created_at     = Date.parse(attributes[:created_at].to_s)
+      self.updated_at     = Date.parse(attributes[:updated_at].to_s)
     end
 
     def self.random
@@ -19,7 +21,8 @@ module SalesEngine
     end
 
     class << self
-      [:id, :name, :description, :unit_price, :merchant_id, :created_at, :updated_at].each do |attribute|
+      [:id, :name, :description, :unit_price, 
+        :merchant_id, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
           SalesEngine::Database.instance.items_data.find do |item|
             item.send(attribute) == parameter
@@ -54,7 +57,8 @@ module SalesEngine
     end
 
     def merchant
-      @merchant || SalesEngine::Database.instance.merchants_data.find do |merchant|
+      m = SalesEngine::Database.instance.merchants_data
+      @merchant || m.find do |merchant|
         if self.merchant_id == merchant.id
           merchant
         end
@@ -62,7 +66,8 @@ module SalesEngine
     end
 
     def invoice_items
-      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item|
+      ii = SalesEngine::Database.instance.invoice_items_data
+      @invoice_items || ii.select do |invoice_item|
         self.id == invoice_item.item_id
       end
     end

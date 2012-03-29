@@ -2,16 +2,18 @@ module SalesEngine
   
   class InvoiceItem
 
-    attr_accessor :id, :item_id, :invoice_id, :quantity, :unit_price, :created_at, :updated_at
+    attr_accessor :id, :item_id, :invoice_id, 
+                  :quantity, :unit_price, 
+                  :created_at, :updated_at
 
     def initialize(attributes = {})
-      self.id                  = attributes[:id].to_i
-      self.item_id             = attributes[:item_id].to_i
-      self.invoice_id          = attributes[:invoice_id].to_i
-      self.quantity            = attributes[:quantity].to_i
-      self.unit_price          = BigDecimal.new(attributes[:unit_price].to_s)/100
-      self.created_at          = Date.parse(attributes[:created_at].to_s)
-      self.updated_at          = Date.parse(attributes[:updated_at].to_s)
+      self.id               = attributes[:id].to_i
+      self.item_id          = attributes[:item_id].to_i
+      self.invoice_id       = attributes[:invoice_id].to_i
+      self.quantity         = attributes[:quantity].to_i
+      self.unit_price       = BigDecimal.new(attributes[:unit_price].to_s)/100
+      self.created_at       = Date.parse(attributes[:created_at].to_s)
+      self.updated_at       = Date.parse(attributes[:updated_at].to_s)
     end
 
     def self.random
@@ -19,16 +21,17 @@ module SalesEngine
     end
 
     class << self
-      [:id, :item_id, :invoice_id, :quantity, :unit_price, :created_at, :updated_at].each do |attribute|
+      [:id, :item_id, :invoice_id, :quantity, 
+        :unit_price, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.invoice_items_data.select do |invoice_item|
-            return invoice_item if invoice_item.send(attribute) == parameter
+          SalesEngine::Database.instance.invoice_items_data.select do |inv_item|
+            return inv_item if inv_item.send(attribute) == parameter
           end
         end
 
         define_method "find_all_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.invoice_items_data.select do |invoice_item|
-            invoice_item.send(attribute) == parameter
+          SalesEngine::Database.instance.invoice_items_data.select do |inv_item|
+            inv_item.send(attribute) == parameter
           end
         end 
       end
@@ -47,7 +50,8 @@ module SalesEngine
     end
 
     def invoice
-      @invoice ||= SalesEngine::Database.instance.invoices_data.find do |invoice|
+      i = SalesEngine::Database.instance.invoices_data
+      @invoice ||= i.find do |invoice|
         if invoice.id == self.invoice_id
           invoice
         end

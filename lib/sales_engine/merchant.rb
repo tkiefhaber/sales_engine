@@ -58,7 +58,8 @@ module SalesEngine
     end
 
     def invoices
-      @invoices ||= SalesEngine::Database.instance.invoices_data.select do |invoice|
+      inv = SalesEngine::Database.instance.invoices_data
+      @invoices ||= inv.select do |invoice|
         self.id == invoice.merchant_id
       end
     end

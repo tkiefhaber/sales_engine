@@ -2,7 +2,9 @@ module SalesEngine
 
   class Customer
 
-    attr_accessor :results, :input, :id, :first_name, :last_name, :created_at, :updated_at
+    attr_accessor :results, :input, :id, 
+                  :first_name, :last_name, 
+                  :created_at, :updated_at
 
     def initialize(attributes = {})
       self.id              = attributes[:id].to_i
@@ -25,7 +27,8 @@ module SalesEngine
     end
 
     class << self
-      [:id, :first_name, :last_name, :created_at, :updated_at].each do |attribute|
+      [:id, :first_name, :last_name, 
+       :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
           SalesEngine::Database.instance.customers_data.find do |customer|
             customer.send(attribute) == parameter
@@ -41,7 +44,8 @@ module SalesEngine
     end
 
     def invoices
-      @invoices ||= SalesEngine::Database.instance.invoices_data.select do |invoice|
+      i = SalesEngine::Database.instance.invoices_data
+      @invoices ||= i.select do |invoice|
         invoice.customer_id == self.id
       end
     end
