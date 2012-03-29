@@ -53,7 +53,7 @@ module SalesEngine
 
     def items
       @items ||= SalesEngine::Database.instance.items_data.select do |item|
-        self.id == item.merchant_id       
+        self.id == item.merchant_id
       end
     end
 
