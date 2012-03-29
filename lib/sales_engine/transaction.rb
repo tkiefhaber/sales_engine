@@ -34,17 +34,6 @@ module SalesEngine
       end
     end
 
-    def self.cleaner(parameter)
-      case parameter
-      when nil
-        ""
-      when Fixnum
-        parameter.to_s
-      else
-        parameter
-      end
-    end
-
     def invoice=(input)
       @invoice = input
     end

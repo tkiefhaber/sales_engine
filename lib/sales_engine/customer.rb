@@ -12,6 +12,14 @@ module SalesEngine
       self.updated_at      = Date.parse(attributes[:updated_at].to_s)
     end
 
+    def invoice=(input)
+      @invoice = input
+    end
+
+    def invoices=(input)
+      @invoices = input
+    end
+
     def self.random
       SalesEngine::Database.instance.customers_data.sample
     end
@@ -30,25 +38,6 @@ module SalesEngine
           end
         end 
       end
-    end
-
-    # def self.cleaner(parameter)
-    #   case parameter
-    #   when nil
-    #     ""
-    #   when Fixnum
-    #     parameter.to_s
-    #   else
-    #     parameter.to_s.downcase
-    #   end
-    # end
-
-    def invoice=(input)
-      @invoice = input
-    end
-
-    def invoices=(input)
-      @invoices = input
     end
 
     def invoices
@@ -75,13 +64,7 @@ module SalesEngine
 
     def merchant_by_transaction
       merchants.sort_by do |merchant|
-        -merchant.invoices_with_successful_transactions.size
-      end
-    end
-
-    def invoices_with_successful_transactions
-      self.invoices.collect do |invoice|
-        invoice.successful?
+        -merchant.successful_transactions.size
       end
     end
 

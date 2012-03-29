@@ -8,7 +8,7 @@ module SalesEngine
       self.id                = attributes[:id].to_i
       self.name              = attributes[:name]
       self.description       = attributes[:description]
-      self.unit_price        = BigDecimal.new(attributes[:unit_price])/100
+      self.unit_price        = BigDecimal.new(attributes[:unit_price].to_s)/100
       self.merchant_id       = attributes[:merchant_id].to_i
       self.created_at        = Date.parse(attributes[:created_at].to_s)
       self.updated_at        = Date.parse(attributes[:updated_at].to_s)
@@ -49,16 +49,16 @@ module SalesEngine
       @merchant = input
     end
 
+    def invoice_items=(input)
+      @invoice_items = input
+    end
+
     def merchant
       @merchant || SalesEngine::Database.instance.merchants_data.find do |merchant|
         if self.merchant_id == merchant.id
           merchant
         end
       end
-    end
-
-    def invoice_items=(input)
-      @invoice_items = input
     end
 
     def invoice_items
@@ -88,16 +88,12 @@ module SalesEngine
     def items_sold
       sum = 0
       @items_sold ||= self.invoice_items.each do |invoice_item|
-        if invoice_item.invoice.successful?
+        if invoice_item.invoice.paid?
           sum += invoice_item.quantity
         end
       end
       sum
     end
-
-
-
-
 
     def best_day
       days = Hash.new { |hash, key|  hash[key] = 0 }
@@ -105,23 +101,6 @@ module SalesEngine
         days[invoice_item.invoice.created_at] += invoice_item.quantity.to_i
       end
       days.sort_by {|key, value| -value }.first.first
-    end
-
-    def self.create(attributes={})
-      i = Item.new(:id                      => find_new_item_id,
-                   :name                    => attributes[:name],
-                   :description             => attributes[:description],
-                   :credit_card_expiration  => attributes[:credit_card_expiration],
-                   :unit_price              => attributes[:unit_price],
-                   :merchant_id             => attributes[:merchant_id],
-                   :created_at              => Date.parse(attributes[:created_at].to_s),
-                   :updated_at              => Date.parse(attributes[:updated_at].to_s))
-      SalesEngine::Database.instance.add_invoice(i)
-      t
-    end
-
-    def self.find_new_item_id
-      SalesEngine::Database.instance.items_data.size.to_i + 1
     end
 
   end

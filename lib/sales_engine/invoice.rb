@@ -2,7 +2,7 @@ module SalesEngine
 
   class Invoice
 
-    attr_accessor :results, :input, :id, :customer_id, :merchant_id, :status, :created_at, :updated_at, :merchant
+    attr_accessor :results, :input, :id, :customer_id, :merchant_id, :status, :created_at, :updated_at
 
     def initialize(attributes = {})
       self.id               = attributes[:id].to_i
@@ -15,12 +15,6 @@ module SalesEngine
 
     def self.random
       return SalesEngine::Database.instance.invoices_data.sample
-    end
-
-    def paid?
-      self.transactions.any? do |transaction|
-        transaction.successful?
-      end
     end
 
     class << self
@@ -53,24 +47,28 @@ module SalesEngine
       @transactions = input
     end
 
-    def transactions
-      @transactions || SalesEngine::Database.instance.transactions_data.select do |transaction|
-        transaction.invoice_id == self.id
-      end
+    def items=(input)
+      @items = input
     end
 
     def invoice_items=(input)
       @invoice_items = input
     end
 
+    def customer=(input)
+      @customer = input
+    end    
+
+    def transactions
+      @transactions || SalesEngine::Database.instance.transactions_data.select do |transaction|
+        transaction.invoice_id == self.id
+      end
+    end
+
     def invoice_items
       @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice|
         self.id == invoice.invoice_id
       end
-    end
-
-    def customer=(input)
-      @customer = input
     end
 
     def customer
@@ -89,12 +87,8 @@ module SalesEngine
       end
     end
 
-    def items=(input)
-      @items = input
-    end
-
     def items
-      invoice_items.map do |invoice_item|
+      @items ||= invoice_items.collect do |invoice_item|
         invoice_item.item
       end
     end
@@ -103,36 +97,30 @@ module SalesEngine
       transactions.any?(&:successful?)
     end
 
+    def unpaid?
+      transactions.none?(&:successful?)
+    end
+
     def total
       @total ||= invoice_items.map do |inv_item|
         inv_item.total
       end.inject(:+)
     end
 
-    def successful?
-      transactions.any? do |t|
-        t.successful?
-      end
-    end
-
     def self.create(attributes= {})
-      i = Invoice.new(:id           => find_new_invoice_id, 
-                      :customer     => attributes[:customer], 
-                      :merchant     => attributes[:merchant], 
-                      :status       => attributes[:status],
-                      :created_at   => Time.now.to_s,
-                      :updated_at   => Time.now.to_s,
-                      :items        => attributes[:items])
-      SalesEngine::InvoiceItem.create_invoice_items(attributes[:id], attributes[:items])
-      create_items(attributes[:items])
+
+      SalesEngine::InvoiceItem.create_invoice_items(find_new_invoice_id, attributes[:items])
+
+      i = Invoice.new(:id              => find_new_invoice_id,
+                      :customer_id     => attributes[:customer].id,
+                      :merchant_id     => attributes[:merchant].id,
+                      :status          => attributes[:status],
+                      :created_at      => Time.now.to_s,
+                      :updated_at      => Time.now.to_s)
+                      # :items        => attributes[:items])
+      
       SalesEngine::Database.instance.add_invoice(i)
       i
-    end
-
-    def self.create_items(items)
-      items.each do |item|
-        SalesEngine::Item.create(item)
-      end
     end
   
     def charge(attributes={})

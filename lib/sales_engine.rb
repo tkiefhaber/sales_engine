@@ -5,7 +5,6 @@ require 'sales_engine/item'
 require 'sales_engine/invoice'
 require 'sales_engine/invoice_item'
 require 'sales_engine/transaction'
-require 'sales_engine/startup_loader'
 require 'bigdecimal'
 
 module SalesEngine

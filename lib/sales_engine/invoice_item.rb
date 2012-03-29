@@ -9,7 +9,7 @@ module SalesEngine
       self.item_id             = attributes[:item_id].to_i
       self.invoice_id          = attributes[:invoice_id].to_i
       self.quantity            = attributes[:quantity].to_i
-      self.unit_price          = BigDecimal.new(attributes[:unit_price])/100
+      self.unit_price          = BigDecimal.new(attributes[:unit_price].to_s)/100
       self.created_at          = Date.parse(attributes[:created_at].to_s)
       self.updated_at          = Date.parse(attributes[:updated_at].to_s)
     end
@@ -86,7 +86,7 @@ module SalesEngine
     end
     
     def invoice_successful?
-      self.invoice.successful?
+      self.invoice.paid?
     end
 
   end

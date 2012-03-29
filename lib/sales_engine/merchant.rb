@@ -85,13 +85,13 @@ module SalesEngine
 
     def revenue(date=nil)
       if date 
-        invoices_by_date(date).collect do |i|
-          i.total
-        end.inject(:+)
+        invoices_by_date(date).inject(0) do |sum, invoice|
+          sum += invoice.total
+        end
       else
-        @revenue ||= paid_invoices.collect do |i|
-          i.total
-        end.inject(:+)
+        @revenue ||= paid_invoices.inject(0) do |sum, invoice|
+          sum += invoice.total
+        end
       end
     end
 
@@ -120,29 +120,28 @@ module SalesEngine
     end
 
     def customers_with_pending_invoices
-      customers.select do |customer|
-        customer.invoices.collect do |invoice|
-          pending = invoice.transactions.select do |transaction|
-            not transaction.successful?
-          end
-          pending.size > 0
+      customers = []
+      invoices.each do |invoice|
+        if invoice.unpaid?
+          customers << invoice.customer
         end
       end
+      customers
     end
 
     def favorite_customer
-      customers_by_transaction.first
-    end
-
-    def customers_by_transaction
-      customers.sort_by do |customer|
-        -customer.invoices_with_successful_transactions.size
+      customers = Hash.new { |hash, key|  hash[key] = 0 }
+      invoices.each do |invoice|
+        if invoice.paid?
+          customers[invoice.customer] += 1
+        end
       end
+      customers.sort_by {|key, value| -value }.first.first
     end
 
-    def invoices_with_successful_transactions
-      self.invoices.collect do |invoice|
-        invoice.successful?
+    def successful_transactions
+      invoices.collect do |invoice|
+        invoice.paid?
       end
     end
 
