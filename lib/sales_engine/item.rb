@@ -5,13 +5,13 @@ module SalesEngine
     attr_accessor :results, :input, :id, :name, :description, :unit_price, :merchant_id, :created_at, :updated_at
 
     def initialize(attributes = {})
-      self.id                = attributes[:id]
+      self.id                = attributes[:id].to_i
       self.name              = attributes[:name]
       self.description       = attributes[:description]
-      self.unit_price        = attributes[:unit_price]
-      self.merchant_id       = attributes[:merchant_id]
-      self.created_at        = Date.parse(attributes[:created_at])
-      self.updated_at        = Date.parse(attributes[:updated_at])
+      self.unit_price        = BigDecimal.new(attributes[:unit_price])/100
+      self.merchant_id       = attributes[:merchant_id].to_i
+      self.created_at        = Date.parse(attributes[:created_at].to_s)
+      self.updated_at        = Date.parse(attributes[:updated_at].to_s)
     end
 
     def self.random
@@ -21,16 +21,14 @@ module SalesEngine
     class << self
       [:id, :name, :description, :unit_price, :merchant_id, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
-          @input = parameter.downcase
-          SalesEngine::Database.instance.items_data.find do |dataline|
-            dataline.send(attribute.to_s).downcase == @input
+          SalesEngine::Database.instance.items_data.find do |item|
+            item.send(attribute) == parameter
           end
         end
 
         define_method "find_all_by_#{attribute}" do |parameter|
-          @input = parameter.downcase
-          SalesEngine::Database.instance.items_data.select do |dataline|
-            dataline.send(attribute.to_s).downcase == @input
+          SalesEngine::Database.instance.items_data.select do |item|
+            item.send(attribute) == parameter
           end
         end 
       end
@@ -52,8 +50,10 @@ module SalesEngine
     end
 
     def merchant
-      @merchant || SalesEngine::Database.instance.merchants_data.select do |merchant_object|
-        self.merchant_id == merchant_object.send(:id)
+      @merchant || SalesEngine::Database.instance.merchants_data.find do |merchant|
+        if self.merchant_id == merchant.id
+          merchant
+        end
       end
     end
 
@@ -62,8 +62,8 @@ module SalesEngine
     end
 
     def invoice_items
-      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item_object|
-        self.id == invoice_item_object.send(:item_id)
+      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item|
+        self.id == invoice_item.item_id
       end
     end
 
@@ -86,10 +86,18 @@ module SalesEngine
     end
 
     def items_sold
-      @items_sold ||= self.invoice_items.inject(0) do |sum, invoice_item|
-        sum += invoice_item.quantity
+      sum = 0
+      @items_sold ||= self.invoice_items.each do |invoice_item|
+        if invoice_item.invoice.successful?
+          sum += invoice_item.quantity
+        end
       end
+      sum
     end
+
+
+
+
 
     def best_day
       days = Hash.new { |hash, key|  hash[key] = 0 }
@@ -99,35 +107,22 @@ module SalesEngine
       days.sort_by {|key, value| -value }.first.first
     end
 
+    def self.create(attributes={})
+      i = Item.new(:id                      => find_new_item_id,
+                   :name                    => attributes[:name],
+                   :description             => attributes[:description],
+                   :credit_card_expiration  => attributes[:credit_card_expiration],
+                   :unit_price              => attributes[:unit_price],
+                   :merchant_id             => attributes[:merchant_id],
+                   :created_at              => Date.parse(attributes[:created_at].to_s),
+                   :updated_at              => Date.parse(attributes[:updated_at].to_s))
+      SalesEngine::Database.instance.add_invoice(i)
+      t
+    end
 
-    # def paid_invoices
-    #   @invoices = SalesEngine::Database.instance.invoices_data.select do |invoice|
-    #     invoice.paid?
-    #   end
-    # end
-
-
-    # def self.most_revenue(x=1)
-    #   all_merchants = Database.instance.merchants_data
-    #   sorted = all_merchants.sort_by { |merchant| -merchant.revenue }
-    #   sorted[0...x]
-    # end
-
-    # def revenue(date=nil)
-    #   if date 
-    #     invoices_by_date(date).inject(0) do |revenue, invoice|
-    #       revenue += invoice.invoice_items.inject(0) do |sum, invoice_item|
-    #         sum += invoice_item.quantity * invoice_item.unit_price
-    #       end
-    #     end
-    #   else
-    #     @revenue ||= self.paid_invoices.inject(0) do |revenue, invoice|
-    #       revenue += invoice.invoice_items.inject(0) do |sum, invoice_item|
-    #         sum += invoice_item.quantity * invoice_item.unit_price
-    #       end
-    #     end
-    #   end
-    # end
+    def self.find_new_item_id
+      SalesEngine::Database.instance.items_data.size.to_i + 1
+    end
 
   end
 end

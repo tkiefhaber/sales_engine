@@ -5,12 +5,12 @@ module SalesEngine
     attr_accessor :results, :input, :id, :customer_id, :merchant_id, :status, :created_at, :updated_at, :merchant
 
     def initialize(attributes = {})
-      self.id               = attributes[:id]
-      self.customer_id      = attributes[:customer_id]
-      self.merchant_id      = attributes[:merchant_id]
+      self.id               = attributes[:id].to_i
+      self.customer_id      = attributes[:customer_id].to_i
+      self.merchant_id      = attributes[:merchant_id].to_i
       self.status           = attributes[:status]
-      self.created_at       = Date.parse(attributes[:created_at])
-      self.updated_at       = Date.parse(attributes[:updated_at])
+      self.created_at       = Date.parse(attributes[:created_at].to_s)
+      self.updated_at       = Date.parse(attributes[:updated_at].to_s)
     end
 
     def self.random
@@ -25,26 +25,16 @@ module SalesEngine
 
     class << self
 
-      def add_invoice(invoice)
-        SalesEngine::Database.instance.invoices_data << invoice
-      end
-
-      def clear_invoices
-        SalesEngine::Database.instance.invoices_data = []
-      end
-
       [:id, :customer_id, :merchant_id, :status, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
-          @input = parameter.downcase
-          SalesEngine::Database.instance.invoices_data.find do |dataline|
-            dataline.send(attribute.to_s).downcase == @input
+          SalesEngine::Database.instance.invoices_data.find do |invoice|
+            invoice.send(attribute) == parameter
           end
         end
 
         define_method "find_all_by_#{attribute}" do |parameter|
-          @input = parameter.downcase
-          SalesEngine::Database.instance.invoices_data.select do |dataline|
-            dataline.send(attribute.to_s).downcase == @input
+          SalesEngine::Database.instance.invoices_data.select do |invoice|
+            invoice.send(attribute) == parameter
           end
         end 
       end
@@ -56,7 +46,6 @@ module SalesEngine
     end
 
     def transaction=(input)
-      # self.merchant_id = input.id
       @transaction = input
     end
 
@@ -75,8 +64,8 @@ module SalesEngine
     end
 
     def invoice_items
-      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice_item|
-        self.id == invoice_item.invoice_id
+      @invoice_items || SalesEngine::Database.instance.invoice_items_data.select do |invoice|
+        self.id == invoice.invoice_id
       end
     end
 
@@ -121,24 +110,31 @@ module SalesEngine
     end
 
     def successful?
-      transactions.each do |t|
-        t.result == "success"
+      transactions.any? do |t|
+        t.successful?
       end
     end
 
     def self.create(attributes= {})
-      i = Invoice.new(:id       => find_new_invoice_id, 
-                  :customer     => attributes[:customer], 
-                  :merchant     => attributes[:merchant], 
-                  :status       => attributes[:status],
-                  :created_at   => Time.now.to_s,
-                  :updated_at   => Time.now.to_s,
-                  :items        => attributes[:items])
+      i = Invoice.new(:id           => find_new_invoice_id, 
+                      :customer     => attributes[:customer], 
+                      :merchant     => attributes[:merchant], 
+                      :status       => attributes[:status],
+                      :created_at   => Time.now.to_s,
+                      :updated_at   => Time.now.to_s,
+                      :items        => attributes[:items])
       SalesEngine::InvoiceItem.create_invoice_items(attributes[:id], attributes[:items])
+      create_items(attributes[:items])
       SalesEngine::Database.instance.add_invoice(i)
       i
     end
 
+    def self.create_items(items)
+      items.each do |item|
+        SalesEngine::Item.create(item)
+      end
+    end
+  
     def charge(attributes={})
       SalesEngine::Transaction.create(self.id, attributes)
     end

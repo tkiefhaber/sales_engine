@@ -2,16 +2,47 @@ module SalesEngine
 
   class Transaction
 
-    attr_accessor :id, :invoice_id, :creditcard_number, :creditcard_expiration, :result, :created_at, :updated_at
+    attr_accessor :id, :invoice_id, :credit_card_number, :credit_card_expiration, :result, :created_at, :updated_at
 
     def initialize(attributes = {})
-      self.id                      = attributes[:id]
-      self.invoice_id              = attributes[:invoice_id]
-      self.creditcard_number       = attributes[:creditcard_number]
-      self.creditcard_expiration   = attributes[:creditcard_expiration]
-      self.result                  = attributes[:result]
-      self.created_at              = Date.parse(attributes[:created_at])
-      self.updated_at              = Date.parse(attributes[:updated_at])
+      self.id                       = attributes[:id].to_i
+      self.invoice_id               = attributes[:invoice_id].to_i
+      self.credit_card_number       = attributes[:credit_card_number]
+      self.credit_card_expiration   = attributes[:credit_card_expiration]
+      self.result                   = attributes[:result]
+      self.created_at               = Date.parse(attributes[:created_at].to_s)
+      self.updated_at               = Date.parse(attributes[:updated_at].to_s)
+    end
+
+    def self.random
+      return SalesEngine::Database.instance.transactions_data.sample
+    end
+
+    class << self
+      [:id, :invoice_id, :credit_card_number, :credit_card_expiration, :result, :created_at, :updated_at].each do |attribute|
+        define_method "find_by_#{attribute}" do |parameter|
+          SalesEngine::Database.instance.transactions_data.find do |transaction|
+            transaction.send(attribute) == parameter
+          end
+        end
+
+        define_method "find_all_by_#{attribute}" do |parameter|
+          SalesEngine::Database.instance.transactions_data.select do |transaction|
+            transaction.send(attribute) == parameter
+          end
+        end 
+      end
+    end
+
+    def self.cleaner(parameter)
+      case parameter
+      when nil
+        ""
+      when Fixnum
+        parameter.to_s
+      else
+        parameter
+      end
     end
 
     def invoice=(input)

@@ -1,3 +1,4 @@
+require 'date'
 module SalesEngine
 
   class Merchant
@@ -5,10 +6,10 @@ module SalesEngine
     attr_accessor :results, :input, :id, :name, :created_at, :updated_at
 
     def initialize(attributes = {})
-      self.id           = attributes[:id]
+      self.id           = attributes[:id].to_i
       self.name         = attributes[:name]
-      self.created_at   = Date.parse(attributes[:created_at])
-      self.updated_at   = Date.parse(attributes[:updated_at])
+      self.created_at   = Date.parse(attributes[:created_at].to_s)
+      self.updated_at   = Date.parse(attributes[:updated_at].to_s)
     end
 
     def items=(input)
@@ -29,26 +30,16 @@ module SalesEngine
 
     class << self
 
-      def add_merchant(merchant)
-        SalesEngine::Database.instance.merchants_data << merchant
-      end
-
-      def clear_merchants
-        SalesEngine::Database.instance.merchants_data = []
-      end
-
       [:id, :name, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
-          @input = parameter.downcase
-          SalesEngine::Database.instance.merchants_data.find do |dataline|
-            dataline.send(attribute.to_s).downcase == @input
+          SalesEngine::Database.instance.merchants_data.find do |merchant|
+            merchant.send(attribute) == parameter
           end
         end
 
         define_method "find_all_by_#{attribute}" do |parameter|
-          @input = parameter.downcase
-          SalesEngine::Database.instance.merchants_data.select do |dataline|
-            dataline.send(attribute.to_s).downcase == @input
+          SalesEngine::Database.instance.merchants_data.select do |merchant|
+            merchant.send(attribute) == parameter
           end
         end 
       end
@@ -61,14 +52,14 @@ module SalesEngine
     end
 
     def items
-      @items ||= SalesEngine::Database.instance.items_data.select do |item_object|
-        self.id == item_object.merchant_id       
+      @items ||= SalesEngine::Database.instance.items_data.select do |item|
+        self.id == item.merchant_id       
       end
     end
 
     def invoices
-      @invoices ||= SalesEngine::Database.instance.invoices_data.select do |invoice_object|
-        self.id == invoice_object.send(:merchant_id)
+      @invoices ||= SalesEngine::Database.instance.invoices_data.select do |invoice|
+        self.id == invoice.merchant_id
       end
     end
 
