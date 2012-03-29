@@ -7,13 +7,13 @@ module SalesEngine
                   :created_at, :updated_at
 
     def initialize(attributes = {})
-      self.id               = attributes[:id].to_i
-      self.item_id          = attributes[:item_id].to_i
-      self.invoice_id       = attributes[:invoice_id].to_i
-      self.quantity         = attributes[:quantity].to_i
-      self.unit_price       = BigDecimal.new(attributes[:unit_price].to_s)/100
-      self.created_at       = Date.parse(attributes[:created_at].to_s)
-      self.updated_at       = Date.parse(attributes[:updated_at].to_s)
+      self.id             = attributes[:id].to_i
+      self.item_id        = attributes[:item_id].to_i
+      self.invoice_id     = attributes[:invoice_id].to_i
+      self.quantity       = attributes[:quantity].to_i
+      self.unit_price     = BigDecimal.new(attributes[:unit_price].to_s)/100
+      self.created_at     = Date.parse(attributes[:created_at].to_s)
+      self.updated_at     = Date.parse(attributes[:updated_at].to_s)
     end
 
     def self.random
@@ -24,14 +24,14 @@ module SalesEngine
       [:id, :item_id, :invoice_id, :quantity, 
         :unit_price, :created_at, :updated_at].each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.invoice_items_data.select do |inv_item|
-            return inv_item if inv_item.send(attribute) == parameter
+          SalesEngine::Database.instance.invoice_items_data.select do |invitem|
+            return invitem if inv_item.send(attribute) == parameter
           end
         end
 
         define_method "find_all_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.invoice_items_data.select do |inv_item|
-            inv_item.send(attribute) == parameter
+          SalesEngine::Database.instance.invoice_items_data.select do |invitem|
+            invitem.send(attribute) == parameter
           end
         end 
       end
