@@ -1,10 +1,10 @@
 require 'date'
 
 Fabricator(:merchant, :class_name => "SalesEngine::Merchant") do
-  id { (1..100).to_a.sample }
+  id { (1..100).sample }
   name { Faker::Name.name }
-  created_at { Time.now }
-  updated_at { Time.now }  
+  created_at { Date.today }
+  updated_at { Date.today }  
 end
 
 Fabricator(:merchant_with_items, :from => :merchant) do
