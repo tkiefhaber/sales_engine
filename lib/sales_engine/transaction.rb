@@ -2,7 +2,7 @@ module SalesEngine
 
   class Transaction
 
-    attr_accessor :id, :invoice_id, :credit_card_number, 
+    attr_accessor :id, :invoice_id, :credit_card_number,
                   :credit_card_expiration, :result, :created_at, :updated_at
 
     def initialize(attributes = {})
@@ -53,12 +53,12 @@ module SalesEngine
 
     def self.create(invoice_id, attributes={})
       t = Transaction.new(:id            => find_new_transaction_id,
-                :invoice_id              => invoice_id,
-                :credit_card_number      => attributes[:credit_card_number],
-                :credit_card_expiration  => attributes[:credit_card_expiration],
-                :result                  => attributes[:result],
-                :created_at              => Time.now.to_s,
-                :updated_at              => Time.now.to_s)
+              :invoice_id              => invoice_id,
+              :credit_card_number      => attributes[:credit_card_number],
+              :credit_card_expiration  => attributes[:credit_card_expiration],
+              :result                  => attributes[:result],
+              :created_at              => Time.now.to_s,
+              :updated_at              => Time.now.to_s)
       SalesEngine::Database.instance.add_transaction(t)
       t
     end

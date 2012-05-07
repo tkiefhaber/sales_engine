@@ -16,21 +16,23 @@ module SalesEngine
       self.updated_at     = Date.parse(attributes[:updated_at].to_s)
     end
 
+    ITEM_ATTRIBUTES = [:id, :name, :description, :unit_price, :merchant_id, :created_at, :updated_at]
+    ITEM_DATA = SalesEngine::Database.instance.items_data
+
     def self.random
       return SalesEngine::Database.instance.items_data.sample
     end
 
     class << self
-      [:id, :name, :description, :unit_price, 
-        :merchant_id, :created_at, :updated_at].each do |attribute|
+      ITEM_ATTRIBUTES.each do |attribute|
         define_method "find_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.items_data.find do |item|
+          ITEM_DATA.find do |item|
             item.send(attribute) == parameter
           end
         end
 
         define_method "find_all_by_#{attribute}" do |parameter|
-          SalesEngine::Database.instance.items_data.select do |item|
+          ITEM_DATA.select do |item|
             item.send(attribute) == parameter
           end
         end 
